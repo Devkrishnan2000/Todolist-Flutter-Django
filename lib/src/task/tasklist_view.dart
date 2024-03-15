@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/src/task/pending_list/pending_task_card.dart';
+import 'package:todolist/src/task/task_cards/task_card.dart';
 import 'package:todolist/src/task/task_model.dart';
 import 'package:todolist/src/task/tasklist_controller.dart';
 

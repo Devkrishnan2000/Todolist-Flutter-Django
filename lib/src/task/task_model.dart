@@ -5,6 +5,7 @@ class Task {
   late DateTime date;
   late DateTime createdDate;
   late int userId;
+  late int taskId;
 
   Task(this.title, this.description, this.completed, this.date,
       this.createdDate);
@@ -15,6 +16,7 @@ class Task {
     date = DateTime.parse(json['date']);
     createdDate = DateTime.parse(json['created_date']);
     userId = json["user"];
+    taskId = json["id"];
   }
 
   Map<String, dynamic> toJSON() {
