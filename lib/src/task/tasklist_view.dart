@@ -5,7 +5,8 @@ import 'package:todolist/src/task/tasklist_controller.dart';
 
 class TaskList extends StatelessWidget {
   const TaskList({super.key});
-
+  final pendingListUrl = '/tasks/list/?completed=False';
+  final completedListUrl = '/tasks/list/?completed=True';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,12 +38,12 @@ class TaskList extends StatelessWidget {
                 ],
               ),
             ),
-            const Expanded(
+            Expanded(
               child: DefaultTabController(
                 length: 2,
                 child: Column(
                   children: [
-                    TabBar(
+                    const TabBar(
                       tabs: [
                         Tab(
                           text: "Pending Tasks",
@@ -54,8 +55,8 @@ class TaskList extends StatelessWidget {
                     ),
                     Expanded(
                       child: TabBarView(children: [
-                        TaskListView(),
-                        Text("Completed task"),
+                        TaskListView(url: pendingListUrl),
+                        TaskListView(url: completedListUrl),
                       ]),
                     )
                   ],
@@ -74,7 +75,8 @@ class TaskList extends StatelessWidget {
 }
 
 class TaskListView extends StatefulWidget {
-  const TaskListView({super.key});
+  final String url;
+  const TaskListView({super.key, required this.url});
 
   @override
   State<TaskListView> createState() => _TaskListViewState();
@@ -88,7 +90,7 @@ class _TaskListViewState extends State<TaskListView> {
   @override
   void initState() {
     super.initState();
-    _data = controller.loadList();
+    _data = controller.loadList(url: widget.url);
     listScrollController.addListener(() {
       if (listScrollController.position.pixels ==
               listScrollController.position.maxScrollExtent &&
@@ -100,6 +102,13 @@ class _TaskListViewState extends State<TaskListView> {
           });
         });
       }
+    });
+  }
+
+  Future refreshData() async {
+    final data = controller.loadList(url: widget.url);
+    setState(() {
+      _data = Future.value(data);
     });
   }
 
@@ -115,7 +124,6 @@ class _TaskListViewState extends State<TaskListView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     listScrollController.dispose();
     super.dispose();
   }
@@ -127,39 +135,42 @@ class _TaskListViewState extends State<TaskListView> {
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>?> snapshot) {
           if (snapshot.hasData) {
+            debugPrint("futureBuilder Called");
             List<dynamic> newData = snapshot.data?['results'];
             _next = snapshot.data?['next'];
-            if(newData.isNotEmpty)
-              {
-                return ListView.builder(
+            if (newData.isNotEmpty) {
+              return RefreshIndicator(
+                onRefresh: refreshData,
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   controller: listScrollController,
                   itemCount: newData.length,
                   itemBuilder: (BuildContext context, int index) {
                     Task task = Task.fromJSON(newData[index]);
                     return TaskCard(task: task);
                   },
-                );
-              }
-            else
-              {
-                return const Center(
-                  child: SizedBox(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.list,size: 40,),
-                        Padding(
-                          padding: EdgeInsets.only(top:8.0),
-                          child: Text("List Empty"),
-                        )
-                      ],
-                    ),
+                ),
+              );
+            } else {
+              return const Center(
+                child: SizedBox(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.list,
+                        size: 40,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: Text("List Empty"),
+                      )
+                    ],
                   ),
-                );
-              }
-
-
+                ),
+              );
+            }
           } else if (snapshot.hasError) {
             return const Center(
               child: SizedBox(
@@ -167,9 +178,12 @@ class _TaskListViewState extends State<TaskListView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.signal_wifi_connected_no_internet_4,size: 40,),
+                    Icon(
+                      Icons.signal_wifi_connected_no_internet_4,
+                      size: 40,
+                    ),
                     Padding(
-                      padding: EdgeInsets.only(top:8.0),
+                      padding: EdgeInsets.only(top: 8.0),
                       child: Text("Failed fetching data from server"),
                     )
                   ],

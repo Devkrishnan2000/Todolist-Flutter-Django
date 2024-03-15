@@ -44,5 +44,5 @@ class ListTask(ListAPIView):
     
     def get_queryset(self):
         user_id = self.request.user.id
-        queryset = Task.objects.filter(user_id=user_id)
+        queryset = Task.objects.filter(user_id=user_id).order_by('-id')
         return queryset

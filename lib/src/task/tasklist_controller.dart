@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
-import 'package:todolist/utils/format.dart';
 
 import '../../api/apis.dart';
 
 class TaskListController {
-  Future<Map<String, dynamic>> loadList({String? url = '/tasks/list/',}) async {
+  Future<Map<String, dynamic>> loadList({
+    String? url = '/tasks/list/',
+  }) async {
     Response? response = await TaskAPI().listOpenTasks(url!);
     if (response?.statusCode == 200) {
       return response?.data;
@@ -13,6 +13,4 @@ class TaskListController {
       throw Exception("Error Fetching Data");
     }
   }
-
-
 }
