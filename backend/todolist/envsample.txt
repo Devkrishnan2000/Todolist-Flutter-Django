@@ -1,0 +1,7 @@
+DBNAME='db name'
+DEBUG=
+UNAME='db username'
+PASSWORD='db password'
+HOST='db host eg localhost'
+PORT='db port'
+SECRET_KEY='django secret key'

@@ -1,0 +1,54 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:todolist/api/api_connector.dart';
+
+class UserAPI {
+  // Class which contains all the app's related to user
+  late Dio _dioOpen;
+
+  UserAPI() {
+    _dioOpen = APIConnector().open; // for open api's
+  }
+  Future<Response?> register(data) async {
+    // api call to register user
+    Response? response;
+    try {
+      response = await _dioOpen.post("account/register/", data: data);
+    } on DioException catch (e) {
+      response = e.response;
+      debugPrint(e.message);
+    }
+    return response;
+  }
+
+  Future<Response?> login(data) async {
+    // api call for login
+    Response? response;
+    try {
+      response = await _dioOpen.post("account/login/", data: data);
+    } on DioException catch (e) {
+      response = e.response;
+      debugPrint(e.message);
+    }
+    return response;
+  }
+}
+
+class TaskAPI {
+  late Future<Dio> _dioClosed;
+  TaskAPI() {
+    _dioClosed = APIConnector.protected().closed;
+  }
+
+  Future<Response?> listOpenTasks(String url) async {
+    Response? response;
+    Dio closed = await _dioClosed;
+    try {
+      response = await closed.get(url);
+    } on DioException catch (e) {
+      response = e.response;
+      debugPrint(e.message);
+    }
+    return response;
+  }
+}
