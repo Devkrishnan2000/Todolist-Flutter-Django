@@ -46,3 +46,13 @@ class ListTask(ListAPIView):
         user_id = self.request.user.id
         queryset = Task.objects.filter(user_id=user_id).order_by('-id')
         return queryset
+    
+class DeleteTask(APIView):
+    def delete(self,request,task_id):
+        try:
+            task = Task.objects.get(id=task_id ,user=request.user.id)
+            task.delete()
+            return Response({"message": "Task Deleted"},status=200);
+        except Task.DoesNotExist:
+            return Response({"error":"D1007","error_message":"Task doesn't exist"});    
+            

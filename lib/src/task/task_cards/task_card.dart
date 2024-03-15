@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/src/task/task_cards/task_card_controller.dart';
+import 'package:todolist/src/task/task_cards/task_dialog.dart';
 import 'package:todolist/utils/appcolor.dart';
 
 import '../../../utils/format.dart';
@@ -20,7 +21,9 @@ class _TaskCardState extends State<TaskCard> {
   Widget build(BuildContext context) {
     final taskCardController = TaskCardController();
     return InkWell(
-      onTap: () {},
+      onLongPress: () {
+        TaskDialog().show(context, widget.task);
+      },
       child: Card.outlined(
         color: AppColor.cardColor,
         child: Padding(
