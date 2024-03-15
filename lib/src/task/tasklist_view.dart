@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:todolist/api/apis.dart';
 import 'package:todolist/src/task/task_cards/task_card.dart';
 import 'package:todolist/src/task/task_model.dart';
 import 'package:todolist/src/task/tasklist_controller.dart';
@@ -110,6 +112,15 @@ class _TaskListViewState extends State<TaskListView> {
     setState(() {
       _data = Future.value(data);
     });
+  }
+
+  Future deleteData(int taskId, int index) async {
+    Response? response = await TaskAPI().deleteTask(taskId);
+    if (response?.statusCode == 200) {
+      Map<String, dynamic>? data = await _data;
+      List<dynamic> prevResults = data?['results'];
+      prevResults.removeAt(index);
+    }
   }
 
   Future<Map<String, dynamic>> loadMoreData() async {

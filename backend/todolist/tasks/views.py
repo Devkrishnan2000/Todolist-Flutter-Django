@@ -48,6 +48,7 @@ class ListTask(ListAPIView):
         return queryset
     
 class DeleteTask(APIView):
+    permission_classes = [IsAuthenticated,]
     def delete(self,request,task_id):
         try:
             task = Task.objects.get(id=task_id ,user=request.user.id)
