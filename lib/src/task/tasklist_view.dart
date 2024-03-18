@@ -3,6 +3,7 @@ import 'package:todolist/src/task/task_cards/task_card.dart';
 import 'package:todolist/src/task/task_model.dart';
 import 'package:todolist/src/task/tasklist_controller.dart';
 import 'package:todolist/utils/alert.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class TaskList extends StatelessWidget {
   const TaskList({super.key});
@@ -127,6 +128,19 @@ class _TaskListViewState extends State<TaskListView> {
     }
   }
 
+  Future setTaskComplete(Task task, BuildContext context) async {
+    try {
+      var data = await controller.completeTask(task, _data);
+      setState(() {
+        _data = Future.value(data);
+      });
+    } on Exception {
+      if (context.mounted) {
+        Alert().show(context, "Operation Failed !", "Please try again later");
+      }
+    }
+  }
+
   @override
   void dispose() {
     listScrollController.dispose();
@@ -144,6 +158,7 @@ class _TaskListViewState extends State<TaskListView> {
             List<dynamic> newData = snapshot.data?['results'];
             _next = snapshot.data?['next'];
             if (newData.isNotEmpty) {
+              debugPrint("Data Length : ${newData.length}");
               return RefreshIndicator(
                 onRefresh: refreshData,
                 child: ListView.builder(
@@ -152,9 +167,16 @@ class _TaskListViewState extends State<TaskListView> {
                   itemCount: newData.length,
                   itemBuilder: (BuildContext context, int index) {
                     Task task = Task.fromJSON(newData[index]);
-                    return TaskCard(
-                      task: task,
-                      deleteTaskFn: deleteData,
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: const Duration(milliseconds: 375),
+                      child: FadeInAnimation(
+                        child: TaskCard(
+                          task: task,
+                          deleteTaskFn: deleteData,
+                          completeTaskFn: setTaskComplete,
+                        ),
+                      ),
                     );
                   },
                 ),

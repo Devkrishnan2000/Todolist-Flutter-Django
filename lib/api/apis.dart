@@ -63,4 +63,16 @@ class TaskAPI {
     }
     return response;
   }
+
+  Future<Response?> completeTask(int taskId) async {
+    Response? response;
+    Dio closed = await _dioClosed;
+    try {
+      response = await closed.put("tasks/complete/$taskId/");
+    } on DioException catch (e) {
+      response = e.response;
+      debugPrint(e.message);
+    }
+    return response;
+  }
 }

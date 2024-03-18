@@ -35,6 +35,26 @@ class TaskListController {
     return previousData;
   }
 
+  Future<Map<String, dynamic>> completeTask(Task task, previousData) async {
+    Response? response = await TaskAPI().completeTask(
+        task.taskId); // performs api call to delete task from server
+    if (response?.statusCode == 200) {
+      // if successful delete that task from list
+      Map<String, dynamic>? data = await previousData;
+      List<dynamic> prevResults = data?['results'];
+      for (int i = 0; i < prevResults.length; ++i) {
+        Task deleteTask = Task.fromJSON(prevResults[i]);
+        if (deleteTask.taskId == task.taskId) {
+          prevResults.removeAt(i);
+          break;
+        }
+      }
+    } else {
+      throw Exception("Error changing complete status");
+    }
+    return previousData;
+  }
+
   Future<Map<String, dynamic>> loadMoreData(previousData, nextPageUrl) async {
     Map<String, dynamic>? data = await previousData;
     List<dynamic> prevResults = data?['results'];

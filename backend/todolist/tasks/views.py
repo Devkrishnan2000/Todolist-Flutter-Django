@@ -5,9 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from todolist.utils import ErrorHandling
-from .serializer import TaskCreateSerializer,TaskViewSerializer
+from .serializer import TaskCreateSerializer, TaskViewSerializer
 from .pagination import CustomPagination
-from  .models import Task
+from .models import Task
 
 import logging
 
@@ -34,26 +34,47 @@ class CreateTask(APIView):
                 status=400,
             )
 
+
 class ListTask(ListAPIView):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [
+        IsAuthenticated,
+    ]
     queryset = Task.objects.filter()
     serializer_class = TaskViewSerializer
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['completed']
-    
+    filterset_fields = ["completed"]
+
     def get_queryset(self):
         user_id = self.request.user.id
-        queryset = Task.objects.filter(user_id=user_id).order_by('-id')
+        queryset = Task.objects.filter(user_id=user_id).order_by("-id")
         return queryset
-    
+
+
 class DeleteTask(APIView):
-    permission_classes = [IsAuthenticated,]
-    def delete(self,request,task_id):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def delete(self, request, task_id):
         try:
-            task = Task.objects.get(id=task_id ,user=request.user.id)
+            task = Task.objects.get(id=task_id, user=request.user.id)
             task.delete()
-            return Response({"message": "Task Deleted"},status=200);
+            return Response({"message": "Task Deleted"}, status=200)
         except Task.DoesNotExist:
-            return Response({"error":"D1007","error_message":"Task doesn't exist"});    
-            
+            return Response({"error": "D1007", "error_message": "Task doesn't exist"})
+
+
+class CompleteTask(APIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def put(self, request, task_id):
+        try:
+            task = Task.objects.get(id=task_id, user=request.user.id)
+            task.completed = True
+            task.save()
+            return Response({"message": "Task Completed"}, status=200)
+        except Task.DoesNotExist:
+            return Response({"error": "D1007", "error_message": "Task doesn't exist"})
