@@ -21,11 +21,13 @@ class Task {
 
   Map<String, dynamic> toJSON() {
     return {
+      'id': taskId,
       'title': title,
       'description': description,
-      'completed': completed,
       'date': date,
-      'created_date': createdDate
+      'completed': completed,
+      'created_date': createdDate,
+      'user': userId
     };
   }
 }

@@ -1,9 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:todolist/api/apis.dart';
 import 'package:todolist/src/task/task_cards/task_card.dart';
 import 'package:todolist/src/task/task_model.dart';
 import 'package:todolist/src/task/tasklist_controller.dart';
+import 'package:todolist/utils/alert.dart';
 
 class TaskList extends StatelessWidget {
   const TaskList({super.key});
@@ -100,7 +99,7 @@ class _TaskListViewState extends State<TaskListView> {
         debugPrint(_next);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           setState(() {
-            _data = loadMoreData();
+            _data = controller.loadMoreData(_data, _next);
           });
         });
       }
@@ -114,23 +113,18 @@ class _TaskListViewState extends State<TaskListView> {
     });
   }
 
-  Future deleteData(int taskId, int index) async {
-    Response? response = await TaskAPI().deleteTask(taskId);
-    if (response?.statusCode == 200) {
-      Map<String, dynamic>? data = await _data;
-      List<dynamic> prevResults = data?['results'];
-      prevResults.removeAt(index);
+  Future deleteData(Task task, BuildContext context) async {
+    // function to delete task
+    try {
+      var data = await controller.deleteTask(task, _data);
+      setState(() {
+        _data = Future.value(data);
+      });
+    } on Exception {
+      if (context.mounted) {
+        Alert().show(context, "Deletion Failed !", "Please try again later");
+      }
     }
-  }
-
-  Future<Map<String, dynamic>> loadMoreData() async {
-    Map<String, dynamic>? data = await _data;
-    List<dynamic> prevResults = data?['results'];
-    Map<String, dynamic>? newData = await controller.loadList(url: _next);
-    List<dynamic> newResults = newData['results'];
-    prevResults.addAll(newResults);
-    newData['results'] = prevResults;
-    return newData;
   }
 
   @override
@@ -158,7 +152,10 @@ class _TaskListViewState extends State<TaskListView> {
                   itemCount: newData.length,
                   itemBuilder: (BuildContext context, int index) {
                     Task task = Task.fromJSON(newData[index]);
-                    return TaskCard(task: task);
+                    return TaskCard(
+                      task: task,
+                      deleteTaskFn: deleteData,
+                    );
                   },
                 ),
               );
