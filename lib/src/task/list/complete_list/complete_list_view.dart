@@ -4,7 +4,6 @@ import 'package:todolist/src/task/list/complete_list/complete_list_controller.da
 import 'package:todolist/src/task/task_cards/task_card.dart';
 import 'package:todolist/src/task/task_model.dart';
 
-import 'complete_list_controller.dart';
 
 class CompleteListView extends StatefulWidget {
   const CompleteListView({super.key});
