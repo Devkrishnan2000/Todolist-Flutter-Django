@@ -30,4 +30,14 @@ class Task {
       'user': userId
     };
   }
+
+  Task.copy(Task other) {
+    taskId = other.taskId;
+    title = other.title;
+    description = other.description;
+    date = other.date;
+    completed = other.completed;
+    createdDate = other.createdDate;
+    userId = other.userId;
+  }
 }

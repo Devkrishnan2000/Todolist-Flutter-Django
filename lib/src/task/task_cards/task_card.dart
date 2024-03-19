@@ -8,14 +8,15 @@ import '../task_model.dart';
 
 class TaskCard extends StatefulWidget {
   final Task task;
-  final Future<dynamic> Function(Task task, BuildContext context) deleteTaskFn;
-  final Future<dynamic> Function(Task task, BuildContext context)
-      completeTaskFn;
+  // final Future<dynamic> Function(Task task, BuildContext context) deleteTaskFn;
+  // final Future<dynamic> Function(Task task, BuildContext context)
+  //     completeTaskFn;
   const TaskCard(
       {super.key,
       required this.task,
-      required this.deleteTaskFn,
-      required this.completeTaskFn});
+      // required this.deleteTaskFn,
+      // required this.completeTaskFn
+      });
 
   @override
   State<TaskCard> createState() => _TaskCardState();
@@ -51,8 +52,8 @@ class _TaskCardState extends State<TaskCard> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          TaskDialog()
-                              .show(context, widget.task, widget.deleteTaskFn);
+                          // TaskDialog()
+                          //     .show(context, widget.task, widget.deleteTaskFn);
                         },
                         icon: const Icon(
                           Icons.delete,
@@ -61,7 +62,7 @@ class _TaskCardState extends State<TaskCard> {
                     if (!widget.task.completed)
                       IconButton(
                           onPressed: () {
-                            widget.completeTaskFn(widget.task, context);
+                            // widget.completeTaskFn(widget.task, context);
                           },
                           icon: const Icon(
                             Icons.task_alt_rounded,
