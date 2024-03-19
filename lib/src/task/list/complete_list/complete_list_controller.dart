@@ -7,12 +7,6 @@ import '../../../../api/apis.dart';
 
 
 class CompleteListController extends TaskListController {
-  @override
-  void onInit() {
-    super.onInit();
-    loadList();
-  }
-
   Future<void> loadList({
     String? url = '/tasks/list/?completed=True',
   }) async {

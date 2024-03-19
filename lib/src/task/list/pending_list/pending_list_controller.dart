@@ -7,11 +7,7 @@ import '../../../../api/apis.dart';
 
 
 class PendingListController extends TaskListController {
-  @override
-  void onInit() {
-    super.onInit();
-    loadList();
-  }
+
 
   Future<void> loadList({
     String? url = '/tasks/list/?completed=False',

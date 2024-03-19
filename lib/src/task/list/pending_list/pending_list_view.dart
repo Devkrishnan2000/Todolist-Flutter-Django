@@ -18,6 +18,7 @@ class _PendingListViewState extends State<PendingListView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    taskController.loadList();
     taskController.infinityScroll(scrollController);
   }
 

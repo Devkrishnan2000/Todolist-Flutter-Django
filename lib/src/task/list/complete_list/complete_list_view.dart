@@ -20,6 +20,7 @@ class _CompleteListViewState extends State<CompleteListView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    taskController.loadList();
     taskController.infinityScroll(scrollController);
   }
 
