@@ -1,71 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/src/task/list/complete_list/complete_list_view.dart';
-import 'package:todolist/src/task/list/pending_list/pending_list_view.dart';
+import 'package:get/get.dart';
+import 'package:todolist/src/task/task_cards/task_card_view.dart';
+import 'package:todolist/src/task/task_model.dart';
 
-class TaskList extends StatelessWidget {
-  const TaskList({super.key});
+import 'tasklist_controller.dart';
+
+class TaskListView extends StatefulWidget {
+  final String listUrl;
+  final String tag;
+  const TaskListView({super.key, required this.listUrl, required this.tag});
+
+  @override
+  State<TaskListView> createState() => _TaskListViewState();
+}
+
+class _TaskListViewState extends State<TaskListView> {
+  final scrollController = ScrollController();
+  late final TaskListController taskController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    taskController = Get.put(TaskListController(), tag: widget.tag);
+    taskController.loadList(url: widget.listUrl);
+    taskController.infinityScroll(scrollController);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            Container(
-              height: 130,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("assets/images/splash.png"),
-                      fit: BoxFit.fill)),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 25.0),
-                    child: Center(
-                        child: Text(
-                      "Todo List",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 42,
-                      ),
-                    )),
-                  ),
-                ],
-              ),
-            ),
-            const Expanded(
-              child: DefaultTabController(
-                length: 2,
-                child: Column(
-                  children: [
-                    TabBar(
-                      tabs: [
-                        Tab(
-                          text: "Pending Tasks",
-                        ),
-                        Tab(
-                          text: "Completed Tasks",
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: TabBarView(children: [
-                        PendingListView(),
-                        CompleteListView(),
-                      ]),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
+    return taskController.obx(
+      (state) => RefreshIndicator(
+        onRefresh: () async {
+          await taskController.loadList(url: widget.listUrl);
+        },
+        child: AnimatedList(
+          key: taskController.listKey.value,
+          controller: scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          initialItemCount: taskController.taskList.value.results.length,
+          itemBuilder: (context, index, animation) {
+            Task task = taskController.taskList.value.results[index];
+            return AnimatedItem(
+                animation: animation, task: task, tag: widget.tag);
+          },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
+      onLoading: const Center(child: CircularProgressIndicator()),
+      onError: (error) => Text(error!),
+      onEmpty: taskController.listEmptyMessage(widget.tag),
+    );
+  }
+}
+
+class AnimatedItem extends StatelessWidget {
+  final Animation<double> animation;
+  final Task task;
+  final String tag;
+  const AnimatedItem(
+      {super.key,
+      required this.animation,
+      required this.task,
+      required this.tag});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizeTransition(
+      sizeFactor: animation,
+      child: TaskCardView(
+        task: task,
+        tag: tag,
       ),
     );
   }

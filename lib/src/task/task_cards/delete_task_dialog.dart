@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:todolist/src/task/task_model.dart';
 import 'package:todolist/utils/appcolor.dart';
 
-class TaskDialog {
-  Future show(BuildContext context, Task task,
-      Future<dynamic> Function(Task task, BuildContext context) deleteTaskFn) {
+import '../list/tasklist_controller.dart';
+
+class DeleteTaskDialog {
+  Future show(BuildContext context, Task task, String tag) {
+    final taskController = Get.find<TaskListController>(tag: tag);
     return showDialog(
         context: context,
         builder: (context) => SizedBox(
@@ -34,7 +38,7 @@ class TaskDialog {
                             style: FilledButton.styleFrom(
                                 backgroundColor: AppColor.pendingLateColor),
                             onPressed: () {
-                              deleteTaskFn(task, context);
+                              taskController.deleteTask(task,tag);
                               Navigator.of(context).pop();
                             },
                             child: const Text("Delete task")),

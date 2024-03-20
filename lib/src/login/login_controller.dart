@@ -5,7 +5,7 @@ import 'package:todolist/src/login/login_model.dart';
 
 import '../../api/apis.dart';
 import '../../utils/alert.dart';
-import '../task/list/tasklist_view.dart';
+import '../task/home_page_view.dart';
 
 class LoginController {
   void login(BuildContext context, email, password) async {
@@ -18,7 +18,7 @@ class LoginController {
         await storage.write(key: "refresh", value: response?.data?["refresh"]);
         if (context.mounted) {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const TaskList()));
+              MaterialPageRoute(builder: (context) => const HomePage()));
         }
       } else if (response?.data["error_code"] == "D1005") {
         Alert()
