@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 import 'package:todolist/src/login/login_controller.dart';
-import 'package:todolist/src/registration/registration_view.dart';
 import 'package:todolist/utils/appcolor.dart';
-import 'package:todolist/utils/validation.dart';
+import 'package:todolist/utils/animation.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -42,7 +43,7 @@ class _LoginViewState extends State<LoginView> {
                 ],
               ),
             ),
-            const LoginForm(),
+            LoginForm(),
           ],
         ),
       ),
@@ -50,22 +51,14 @@ class _LoginViewState extends State<LoginView> {
   }
 }
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class LoginForm extends StatelessWidget {
+  LoginForm({super.key});
+  final loginController = Get.put(LoginController());
 
-  @override
-  State<LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<LoginForm> {
-  final formKey = GlobalKey<FormState>();
-  late String _email;
-  late String _password;
-  bool isPasswordVisible = false;
   @override
   Widget build(BuildContext context) {
-    return Form(
-        key: formKey,
+    return Obx(() => Form(
+        key: loginController.loginFormKey,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
           child: SizedBox(
@@ -75,25 +68,14 @@ class _LoginFormState extends State<LoginForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    onSaved: (value) {
-                      _email = value!;
-                    },
+                    controller: loginController.emailController,
+                    validator: (value) => loginController.emailValidator(value),
                     decoration: const InputDecoration(
                       labelText: "Email",
                       border: OutlineInputBorder(),
                       counterText: "",
                     ),
                     textInputAction: TextInputAction.next,
-                    validator: (value) {
-                      if (!Validation.requiredFieldValidation(value!)) {
-                        return Validation.requiredValidationMsg;
-                      }
-                      if (!Validation.emailValidation(value)) {
-                        return Validation.emailValidationMsg;
-                      } else {
-                        return null;
-                      }
-                    },
                     maxLength: 100,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
@@ -101,39 +83,27 @@ class _LoginFormState extends State<LoginForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    onSaved: (value) {
-                      _password = value!;
-                    },
+                    controller: loginController.passwordController,
+                    validator: (value) =>
+                        loginController.passwordValidator(value),
                     decoration: InputDecoration(
                       labelText: "Password",
                       border: const OutlineInputBorder(),
                       counterText: "",
                       suffixIcon: IconButton(
-                        icon: Icon(isPasswordVisible
+                        icon: Icon(loginController.passwordVisible.value
                             ? Icons.visibility_off
                             : Icons.visibility),
                         onPressed: () {
-                          setState(() {
-                            isPasswordVisible = !isPasswordVisible;
-                          });
+                          loginController.showHidePassword();
                         },
                       ),
                     ),
-                    obscureText: !isPasswordVisible,
-                    validator: (value) {
-                      if (!Validation.requiredFieldValidation(value!)) {
-                        return Validation.requiredValidationMsg;
-                      } else {
-                        return null;
-                      }
-                    },
+                    obscureText: !loginController.passwordVisible.value,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (value) {
-                      if (formKey.currentState!.validate()) {
-                        formKey.currentState!.save();
-                        LoginController().login(context, _email, _password);
-                      }
+                      loginController.login();
                     },
                     maxLength: 20,
                   ),
@@ -142,10 +112,7 @@ class _LoginFormState extends State<LoginForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Registration()));
+                        Get.toNamed("/registration");
                       },
                       child: const Text(
                         "New ? create an account",
@@ -154,21 +121,27 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 60,
+                    child: FilledButton(
                       onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          formKey.currentState!.save();
-                          LoginController().login(context, _email, _password);
-                        }
+                        loginController.isLoading.value
+                            ? null
+                            : loginController.login();
                       },
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(color: AppColor.primaryColor),
-                      )),
+                      child: CustomAnimation.showLoadingAnimation(
+                          loginController.isLoading.value,
+                          const Text(
+                            'Login',
+                            style: TextStyle(fontSize: 20),
+                          )),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-        ));
+        )));
   }
 }

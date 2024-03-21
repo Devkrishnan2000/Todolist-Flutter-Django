@@ -9,7 +9,7 @@ class Validation {
   static const String passwordFieldValidationMsg =
       "Should contain atLeast one alphabet character,digit and minimum of 8 digits.";
   static const String passwordMatchValidationMsg = "Password Doesn't Match";
-  static bool emailValidation(String value) {
+  static bool emailFieldValidation(String value) {
     if (RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
         .hasMatch(value)) {
       return true;

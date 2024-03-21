@@ -1,33 +1,85 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:todolist/src/login/login_model.dart';
-
+import 'package:todolist/utils/snack_bar.dart';
 import '../../api/apis.dart';
-import '../../utils/alert.dart';
-import '../task/home_page_view.dart';
+import '../../utils/validation.dart';
 
-class LoginController {
-  void login(BuildContext context, email, password) async {
-    LoginModel data = LoginModel(email, password);
-    Response? response = await UserAPI().login(data.toJson());
-    if (context.mounted) {
+class LoginController extends GetxController {
+  var loginFormKey = GlobalKey<FormState>(debugLabel: 'loginKey');
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+  var passwordVisible = false.obs;
+  var isLoading = false.obs;
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    emailController.dispose();
+    passwordController.dispose();;
+    super.dispose();
+  }
+
+  void showHidePassword() {
+    passwordVisible.value = !passwordVisible.value;
+  }
+
+  String? emailValidator(String? value) {
+    if (!Validation.requiredFieldValidation(value!)) {
+      return Validation.requiredValidationMsg;
+    }
+    if (!Validation.emailFieldValidation(value)) {
+      return Validation.emailValidationMsg;
+    } else {
+      return null;
+    }
+  }
+
+  String? passwordValidator(String? value) {
+    if (!Validation.requiredFieldValidation(value!)) {
+      return Validation.requiredValidationMsg;
+    } else {
+      return null;
+    }
+  }
+
+
+
+  void login() async {
+    if (loginFormKey.currentState!.validate()) {
+      LoginModel data =
+          LoginModel(emailController.text, passwordController.text);
+      isLoading.value = true;
+      dio.Response? response = await UserAPI().login(data.toJson());
+      isLoading.value = false;
       if (response?.statusCode == 200) {
         const storage = FlutterSecureStorage();
         await storage.write(key: "access", value: response?.data?["access"]);
         await storage.write(key: "refresh", value: response?.data?["refresh"]);
-        if (context.mounted) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const HomePage()));
-        }
+        Get.offNamed("/");
       } else if (response?.data["error_code"] == "D1005") {
-        Alert()
-            .show(context, "Login Failed !", "Please use correct credentials");
+        CustomSnackBar().showErrorSnackBar(
+          "Login Failed !",
+          "Please use correct credentials",
+        );
       } else if (response?.data["error_code"] == "D1004") {
-        Alert().show(context, "Login Failed !", "User doesn't exist");
+        CustomSnackBar().showErrorSnackBar(
+          "Login Failed !",
+          "User doesn't exist",
+        );
       } else {
-        Alert().show(context, "Login Failed !",
-            "Unknown Error has occurred please try again");
+        CustomSnackBar().showErrorSnackBar(
+          "Login Failed !",
+          "Server error",
+        );
       }
     }
   }

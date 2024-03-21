@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:todolist/src/registration/registration_controller.dart';
-
-import 'package:todolist/utils/appcolor.dart';
-import 'package:todolist/utils/validation.dart';
+import 'package:todolist/utils/animation.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -18,8 +17,6 @@ class _RegistrationState extends State<Registration> {
     return Scaffold(
       body: SingleChildScrollView(
         child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
               Container(
@@ -42,7 +39,7 @@ class _RegistrationState extends State<Registration> {
                   ),
                 ),
               ),
-              const RegistrationForm(),
+              RegistrationForm(),
             ],
           ),
         ),
@@ -51,49 +48,25 @@ class _RegistrationState extends State<Registration> {
   }
 }
 
-class RegistrationForm extends StatefulWidget {
-  const RegistrationForm({super.key});
-
-  @override
-  State<RegistrationForm> createState() => _RegistrationFormState();
-}
-
-class _RegistrationFormState extends State<RegistrationForm> {
-  final formKey = GlobalKey<FormState>();
-  final _passwordC = TextEditingController();
-  final _rePassword = TextEditingController();
-  bool isPasswordVisible = false;
-  bool isRePasswordVisible = false;
-  String _name = "";
-  String _email = "";
-  String _password = "";
-  RegistrationController controller = RegistrationController();
+class RegistrationForm extends StatelessWidget {
+  RegistrationForm({super.key});
+  final registrationController = Get.put(RegistrationController());
   @override
   Widget build(BuildContext context) {
-    return Form(
-        key: formKey,
+    return Obx(() => Form(
+        key: registrationController.registrationFormKey,
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
-                onSaved: (value) {
-                  _name = value!;
-                },
+                controller: registrationController.nameController,
                 decoration: const InputDecoration(
                   labelText: "Name",
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (!Validation.requiredFieldValidation(value!)) {
-                    return Validation.requiredValidationMsg;
-                  }
-                  if (!Validation.nameFieldValidation(value)) {
-                    return Validation.nameFieldValidationMsg;
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) =>
+                    registrationController.validateName(value),
                 maxLength: 40,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 textInputAction: TextInputAction.next,
@@ -102,23 +75,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
-                onSaved: (value) {
-                  _email = value!;
-                },
+                controller: registrationController.emailController,
                 decoration: const InputDecoration(
                   labelText: "Email",
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (!Validation.requiredFieldValidation(value!)) {
-                    return Validation.requiredValidationMsg;
-                  }
-                  if (!Validation.emailValidation(value)) {
-                    return Validation.emailValidationMsg;
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) =>
+                    registrationController.validateEmail(value),
                 maxLength: 100,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 textInputAction: TextInputAction.next,
@@ -127,33 +90,21 @@ class _RegistrationFormState extends State<RegistrationForm> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
-                onSaved: (value) {
-                  _password = value!;
-                },
-                controller: _passwordC,
+                controller: registrationController.passwordController,
                 decoration: InputDecoration(
                     labelText: "Password",
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                         onPressed: () {
-                          setState(() {
-                            isPasswordVisible = !isPasswordVisible;
-                          });
+                          registrationController.showHidePassword();
                         },
-                        icon: Icon(isPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility))),
-                obscureText: !isPasswordVisible,
-                validator: (value) {
-                  if (!Validation.requiredFieldValidation(value!)) {
-                    return Validation.requiredValidationMsg;
-                  }
-                  if (!Validation.passwordFieldValidation(value)) {
-                    return Validation.passwordFieldValidationMsg;
-                  } else {
-                    return null;
-                  }
-                },
+                        icon: Icon(
+                            registrationController.isPasswordVisible.value
+                                ? Icons.visibility_off
+                                : Icons.visibility))),
+                obscureText: !registrationController.isPasswordVisible.value,
+                validator: (value) =>
+                    registrationController.validatePassword(value),
                 maxLength: 20,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 textInputAction: TextInputAction.next,
@@ -162,53 +113,45 @@ class _RegistrationFormState extends State<RegistrationForm> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
-                controller: _rePassword,
+                controller: registrationController.rePasswordController,
                 decoration: InputDecoration(
                     labelText: "Re enter password",
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                         onPressed: () {
-                          setState(() {
-                            isRePasswordVisible = !isRePasswordVisible;
-                          });
+                          registrationController.showHideRePassword();
                         },
-                        icon: Icon(isRePasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility))),
-                obscureText: !isRePasswordVisible,
-                validator: (value) {
-                  if (!Validation.requiredFieldValidation(value!)) {
-                    return Validation.requiredValidationMsg;
-                  }
-                  if (!Validation.passwordMatchValidation(
-                      value, _passwordC.text)) {
-                    return Validation.passwordMatchValidationMsg;
-                  } else {
-                    return null;
-                  }
-                },
+                        icon: Icon(
+                            registrationController.isRePasswordVisible.value
+                                ? Icons.visibility_off
+                                : Icons.visibility))),
+                obscureText: !registrationController.isRePasswordVisible.value,
+                validator: (value) =>
+                    registrationController.validateRePassword(value),
                 maxLength: 20,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (value) {
-                  if (formKey.currentState!.validate()) {
-                    formKey.currentState!.save();
-                    controller.registerUser(context, _name, _email, _password);
-                  }
+                  registrationController.registerUser();
                 },
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  formKey.currentState!.save();
-                  controller.registerUser(context, _name, _email, _password);
-                }
-              },
-              child: const Text("Register",
-                  style: TextStyle(color: AppColor.primaryColor)),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 60,
+                child: FilledButton(
+                  onPressed: () {
+                    registrationController.registerUser();
+                  },
+                  child: CustomAnimation.showLoadingAnimation(
+                      registrationController.isLoading.value,
+                      const Text("Register", style: TextStyle(fontSize: 20))),
+                ),
+              ),
             )
           ],
-        ));
+        )));
   }
 }
