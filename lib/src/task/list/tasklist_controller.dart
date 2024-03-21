@@ -16,13 +16,15 @@ class TaskListController extends GetxController with StateMixin {
   bool confettiPlayed = false;
 
   Future<void> loadList({
+    // function to load list for the first time (common for pending and complete list)
     String? url = '/tasks/list/',
   }) async {
     change(taskList, status: RxStatus.loading());
     deo.Response? response = await TaskAPI().listOpenTasks(url!);
     if (response?.statusCode == 200) {
       taskList.value = TaskListModel.fromJSON(response?.data);
-      taskList.value.results.isEmpty
+      taskList.value.results
+              .isEmpty // set's empty status if tasklist is empty after deletion
           ? change(taskList, status: RxStatus.empty())
           : change(taskList, status: RxStatus.success());
     } else {
@@ -30,9 +32,24 @@ class TaskListController extends GetxController with StateMixin {
     }
   }
 
-  Future<void> loadMoreData() async {
+  Future<void> loadMoreData({bool afterDeletion = false}) async {
     if (taskList.value.next != null) {
-      String nextPageUrl = taskList.value.next as String;
+      // loads next set of data
+      late String nextPageUrl;
+      if (afterDeletion) {
+        debugPrint("inside after deletion");
+        Uri initialUri = Uri.parse(taskList.value.next as String);
+        Map<String, dynamic> newQueryParameters =
+            Map.from(initialUri.queryParameters);
+        int oldOffset = int.parse(initialUri.queryParameters['offset']!);
+        // after deletion offset need's to be reduced  by number of items that got deleted in this case its 1
+        newQueryParameters['offset'] = (oldOffset - 1).toString();
+        Uri newUri = initialUri.replace(queryParameters: newQueryParameters);
+        nextPageUrl = newUri.toString();
+        debugPrint(nextPageUrl);
+      } else {
+        nextPageUrl = taskList.value.next as String;
+      }
       change(taskList, status: RxStatus.loadingMore());
       deo.Response? response = await TaskAPI().listOpenTasks(nextPageUrl);
       if (response?.statusCode == 200) {
@@ -41,8 +58,6 @@ class TaskListController extends GetxController with StateMixin {
         taskList.value.results.addAll(newData.results);
         taskList.value.next = newData.next;
         taskList.value.count = newData.count;
-        debugPrint("current list length $oldListLength");
-        debugPrint("new data length ${newData.results.length}");
         listKey.value.currentState
             ?.insertAllItems(oldListLength, newData.results.length);
         taskList.value.results.isEmpty
@@ -55,9 +70,8 @@ class TaskListController extends GetxController with StateMixin {
   }
 
   void infinityScroll(ScrollController listScrollController) {
+    // function which is responsible for infinity scroll
     listScrollController.addListener(() async {
-      // debugPrint("Current Position :${listScrollController.position.pixels.toString()}");
-      // debugPrint("Max Position :${listScrollController.position.maxScrollExtent.toString()}");
       if (listScrollController.position.pixels ==
           listScrollController.position.maxScrollExtent) {
         loadMoreData();
@@ -81,7 +95,7 @@ class TaskListController extends GetxController with StateMixin {
 
   Future<void> completeTask(Task task, String tag) async {
     deo.Response? response = await TaskAPI().completeTask(
-        task.taskId); // performs api call to delete task from server
+        task.taskId); // performs api call to completed task from server
     if (response?.statusCode == 200) {
       // if successful delete that task from list
       await removeFromList(task, tag);
@@ -91,25 +105,27 @@ class TaskListController extends GetxController with StateMixin {
   }
 
   Future<void> removeFromList(Task task, String tag) async {
+    // function to remove task from the local list after deletion or completion of task is done
     int index = taskList.value.results.indexOf(task);
-    taskList.value.results.remove(task);
+    taskList.value.results.remove(task); // removes task from list
+    // to perform item removal animation
     listKey.value.currentState?.removeItem(index, (context, animation) {
       return AnimatedItem(task: task, tag: tag, animation: animation);
     });
-    if (taskList.value.results.length <= 6) {
-      debugPrint("added more data");
-      await loadMoreData();
-    }
+    await loadMoreData(afterDeletion: true);
 
-    taskList.value.results.isEmpty
+    taskList.value.results
+            .isEmpty // set's empty status if tasklist is empty after deletion
         ? change(taskList, status: RxStatus.empty())
         : change(taskList, status: RxStatus.success());
   }
 
   Widget listEmptyMessage(String tag) {
+    // widget to load when list is empty
     if (tag == "pending") {
+      // loads if pending task list empty
       if (!confettiPlayed) {
-        confettiController.play();
+        confettiController.play(); // play's confetti animation once
         confettiPlayed = true;
       }
 
@@ -144,6 +160,7 @@ class TaskListController extends GetxController with StateMixin {
       ]);
     } else {
       return const Center(
+        // loads if complete task list empty
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

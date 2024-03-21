@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from todolist.utils import ErrorHandling
 from .serializer import TaskCreateSerializer, TaskViewSerializer
-from .pagination import CustomPagination
+from .pagination import CustomPagination,LimitPagination
+
 from .models import Task
 
 import logging
@@ -41,7 +42,7 @@ class ListTask(ListAPIView):
     ]
     queryset = Task.objects.filter()
     serializer_class = TaskViewSerializer
-    pagination_class = CustomPagination
+    pagination_class = LimitPagination
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["completed"]
 
