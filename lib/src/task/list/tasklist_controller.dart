@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:dio/dio.dart' as deo;
 import 'package:todolist/src/task/list/tasklist_view.dart';
 import 'package:todolist/utils/appcolor.dart';
+import 'package:todolist/utils/snack_bar.dart';
 import '../../../api/apis.dart';
 import '../task_model.dart';
 import 'tasklist_model.dart';
@@ -89,6 +90,8 @@ class TaskListController extends GetxController with StateMixin {
       // if successful delete that task from list
       removeFromList(task, tag);
     } else {
+      CustomSnackBar()
+          .showErrorSnackBar("Operation Failed", "Please Try again");
       change(taskList, status: RxStatus.error("Error Deleting data"));
     }
   }
@@ -100,6 +103,8 @@ class TaskListController extends GetxController with StateMixin {
       // if successful delete that task from list
       await removeFromList(task, tag);
     } else {
+      CustomSnackBar()
+          .showErrorSnackBar("Operation Failed", "Please Try again");
       change(taskList, status: RxStatus.error("Error Deleting data"));
     }
   }
@@ -135,24 +140,27 @@ class TaskListController extends GetxController with StateMixin {
           blastDirectionality: BlastDirectionality.explosive,
           emissionFrequency: 0.1,
         ),
-        const Center(
+        Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                '🥳',
-                style: TextStyle(fontSize: 96),
+              Container(
+                height: 300,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image:
+                            AssetImage('assets/images/tasks_completed.png'))),
               ),
-              Text(
+              const Text(
                 "Hooray !",
                 style: TextStyle(
-                  fontSize: 48,
+                  fontSize: 28,
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              Text(
-                "No pending tasks left",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              const Text(
+                "You have completed all the tasks",
+                style: TextStyle(fontSize: 14),
               ),
             ],
           ),

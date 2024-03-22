@@ -19,9 +19,21 @@ class MyApp extends StatelessWidget {
       title: 'TodoList',
       initialRoute: '/login',
       getPages: [
-        GetPage(name: '/', page: () => const HomePage(), transition: Transition.leftToRightWithFade),
-        GetPage(name: '/registration', page: () => const Registration(), transition: Transition.circularReveal),
-        GetPage(name: '/login', page: () => const LoginView(), transition: Transition.zoom),
+        GetPage(
+          name: '/',
+          page: () => const HomePage(),
+          transition: Transition.circularReveal,
+        ),
+        GetPage(
+          name: '/registration',
+          page: () => const Registration(),
+          transition: Transition.circularReveal,
+        ),
+        GetPage(
+          name: '/login',
+          page: () => const LoginView(),
+          transition: Transition.circularReveal,
+        ),
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

@@ -27,4 +27,39 @@ class Alert {
               ],
             ));
   }
+
+  Widget showConnectionError(Function retryFn) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          height: 200,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/fatal_error.png'),
+            ),
+          ),
+        ),
+         const Padding(
+          padding: EdgeInsets.only(top:8.0),
+          child: Text(
+            "Connection Failed !",
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        const Text("Please try again later"),
+        Padding(
+          padding: const EdgeInsets.only(top:8.0),
+          child: FilledButton(
+            onPressed: ()=>retryFn(),
+            child: const Text("Retry"),
+          ),
+        ),
+      ],
+    );
+  }
 }

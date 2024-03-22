@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/src/task/home_page_controller.dart';
 import 'package:todolist/src/task/list/tasklist_view.dart';
+import 'package:todolist/utils/appbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,34 +36,11 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: CustomAppBar.show(),
         body: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
-              Container(
-                height: 130,
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/splash.png"),
-                        fit: BoxFit.fill)),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.0),
-                      child: Center(
-                          child: Text(
-                        "Todo List",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 42,
-                        ),
-                      )),
-                    ),
-                  ],
-                ),
-              ),
               Expanded(
                 child: Column(
                   children: [

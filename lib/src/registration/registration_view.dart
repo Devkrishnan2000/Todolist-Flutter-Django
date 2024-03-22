@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:todolist/src/registration/registration_controller.dart';
 import 'package:todolist/utils/animation.dart';
+import 'package:todolist/utils/appbar.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -15,33 +16,10 @@ class _RegistrationState extends State<Registration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar.show(heading: "Registration"),
       body: SingleChildScrollView(
         child: SizedBox(
-          child: Column(
-            children: [
-              Container(
-                height: 150,
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/splash.png"),
-                        fit: BoxFit.fill)),
-                child: const Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 25),
-                    child: Text(
-                      "Registration",
-                      style: TextStyle(
-                        fontSize: 42,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              RegistrationForm(),
-            ],
-          ),
+          child: RegistrationForm(),
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todolist/src/task/task_cards/task_card_view.dart';
 import 'package:todolist/src/task/task_model.dart';
+import 'package:todolist/utils/alert.dart';
 
 import 'tasklist_controller.dart';
 
@@ -53,7 +54,8 @@ class _TaskListViewState extends State<TaskListView> {
         ),
       ),
       onLoading: const Center(child: CircularProgressIndicator()),
-      onError: (error) => Text(error!),
+      onError: (error) => Alert().showConnectionError(
+          () => taskController.loadList(url: widget.listUrl)),
       onEmpty: taskController.listEmptyMessage(widget.tag),
     );
   }
