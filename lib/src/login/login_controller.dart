@@ -24,7 +24,8 @@ class LoginController extends GetxController {
   void dispose() {
     // TODO: implement dispose
     emailController.dispose();
-    passwordController.dispose();;
+    passwordController.dispose();
+    ;
     super.dispose();
   }
 
@@ -51,8 +52,6 @@ class LoginController extends GetxController {
     }
   }
 
-
-
   void login() async {
     if (loginFormKey.currentState!.validate()) {
       LoginModel data =
@@ -66,17 +65,17 @@ class LoginController extends GetxController {
         await storage.write(key: "refresh", value: response?.data?["refresh"]);
         Get.offNamed("/");
       } else if (response?.data["error_code"] == "D1005") {
-        CustomSnackBar().showErrorSnackBar(
+        CustomSnackBar.showErrorSnackBar(
           "Login Failed !",
           "Please use correct credentials",
         );
       } else if (response?.data["error_code"] == "D1004") {
-        CustomSnackBar().showErrorSnackBar(
+        CustomSnackBar.showErrorSnackBar(
           "Login Failed !",
           "User doesn't exist",
         );
       } else {
-        CustomSnackBar().showErrorSnackBar(
+        CustomSnackBar.showErrorSnackBar(
           "Login Failed !",
           "Server error",
         );

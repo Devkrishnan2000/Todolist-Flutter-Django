@@ -19,7 +19,7 @@ class Validation {
   }
 
   static bool requiredFieldValidation(String value) {
-    if (value.isEmpty) {
+    if (value.trim().isEmpty) {
       return false;
     } else {
       return true;

@@ -121,7 +121,9 @@ class RegistrationForm extends StatelessWidget {
                 height: 60,
                 child: FilledButton(
                   onPressed: () {
-                    registrationController.registerUser();
+                    registrationController.isLoading.value
+                        ? null
+                        : registrationController.registerUser();
                   },
                   child: CustomAnimation.showLoadingAnimation(
                       registrationController.isLoading.value,

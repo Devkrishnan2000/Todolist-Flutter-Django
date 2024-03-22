@@ -75,4 +75,16 @@ class TaskAPI {
     }
     return response;
   }
+
+  Future<Response?> createTask(data) async {
+    Response? response;
+    Dio closed = await _dioClosed;
+    try {
+      response = await closed.post("tasks/create/",data: data);
+    } on DioException catch (e) {
+      response = e.response;
+      debugPrint(e.toString());
+    }
+    return response;
+  }
 }

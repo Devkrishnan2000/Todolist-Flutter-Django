@@ -95,15 +95,15 @@ class RegistrationController extends GetxController {
       if (response?.statusCode == 201) {
         debugPrint("Registered Successful");
         Get.back();
-        CustomSnackBar().showSuccessSnackBar(
+        CustomSnackBar.showSuccessSnackBar(
             "Registered Successfully", "You may now login");
       } else if (response?.data?["error_code"] == "D1002") {
-        CustomSnackBar().showErrorSnackBar(
+        CustomSnackBar.showErrorSnackBar(
           "Registration Failed",
           "User with same email exists",
         );
       } else {
-        CustomSnackBar().showErrorSnackBar(
+        CustomSnackBar.showErrorSnackBar(
           "Registration Failed",
           "Unknown error occurred please try again",
         );

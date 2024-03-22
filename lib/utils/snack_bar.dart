@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'appcolor.dart';
 
 class CustomSnackBar {
-  void showErrorSnackBar(String title, String description) {
+  static void showErrorSnackBar(String title, String description) {
     Get.snackbar(
       title,
       description,
@@ -15,7 +15,7 @@ class CustomSnackBar {
         color: Colors.white,
         size: 40,
       ),
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: SnackPosition.TOP,
       duration: const Duration(seconds: 5),
       margin: const EdgeInsets.all(5),
       padding: const EdgeInsets.fromLTRB(20, 12, 12, 12),
@@ -23,7 +23,7 @@ class CustomSnackBar {
     );
   }
 
-  void showSuccessSnackBar(String title, String description) {
+  static void showSuccessSnackBar(String title, String description) {
     Get.snackbar(
       title,
       description,
@@ -34,7 +34,7 @@ class CustomSnackBar {
         color: Colors.white,
         size: 40,
       ),
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: SnackPosition.TOP,
       duration: const Duration(seconds: 5),
       margin: const EdgeInsets.all(5),
       padding: const EdgeInsets.fromLTRB(20, 12, 12, 12),

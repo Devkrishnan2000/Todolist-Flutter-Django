@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todolist/src/registration/registration_view.dart';
+import 'package:todolist/src/task/create_task/create_task_view.dart';
 import 'package:todolist/src/task/home_page_view.dart';
 import 'src/login/login_view.dart';
 
@@ -32,6 +33,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/login',
           page: () => const LoginView(),
+          transition: Transition.circularReveal,
+        ),
+        GetPage(
+          name: '/create_task',
+          page: () => CreateTaskView(),
           transition: Transition.circularReveal,
         ),
       ],

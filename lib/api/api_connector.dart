@@ -9,8 +9,7 @@ class APIConnector {
   APIConnector() {
     open = createOpenDio();
   }
-  APIConnector.protected()
-  {
+  APIConnector.protected() {
     closed = createProtectedDio();
   }
 
@@ -71,7 +70,7 @@ class APIConnector {
               requestOptions.headers['Authorization'] =
                   'Bearer ${response.data['access']}';
               debugPrint("New Access token added");
-              Response newResponse  =await dio.request(requestOptions.path,
+              Response newResponse = await dio.request(requestOptions.path,
                   options: Options(
                     method: requestOptions.method,
                     headers: requestOptions.headers,
@@ -81,7 +80,8 @@ class APIConnector {
                     responseType: requestOptions.responseType,
                     contentType: requestOptions.contentType,
                     validateStatus: requestOptions.validateStatus,
-                  ));
+                  ),
+                  data: requestOptions.data);
               debugPrint("Previous request called");
               return handler.resolve(newResponse);
             } on DioException catch (e) {

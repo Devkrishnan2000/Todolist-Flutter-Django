@@ -90,7 +90,7 @@ class TaskListController extends GetxController with StateMixin {
       // if successful delete that task from list
       removeFromList(task, tag);
     } else {
-      CustomSnackBar()
+      CustomSnackBar
           .showErrorSnackBar("Operation Failed", "Please Try again");
       change(taskList, status: RxStatus.error("Error Deleting data"));
     }
@@ -103,7 +103,7 @@ class TaskListController extends GetxController with StateMixin {
       // if successful delete that task from list
       await removeFromList(task, tag);
     } else {
-      CustomSnackBar()
+      CustomSnackBar
           .showErrorSnackBar("Operation Failed", "Please Try again");
       change(taskList, status: RxStatus.error("Error Deleting data"));
     }
@@ -142,6 +142,7 @@ class TaskListController extends GetxController with StateMixin {
         ),
         Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 height: 300,
