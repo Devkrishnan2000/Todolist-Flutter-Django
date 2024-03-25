@@ -46,6 +46,18 @@ class UserAPI {
     }
     return response;
   }
+
+  Future<Response?> updateUserDetails(data) async {
+    Response? response;
+    Dio closed = await _dioClosed;
+    try {
+      response = await closed.put("account/update/", data: data);
+    } on DioException catch (e) {
+      response = e.response;
+      debugPrint(e.message);
+    }
+    return response;
+  }
 }
 
 class TaskAPI {

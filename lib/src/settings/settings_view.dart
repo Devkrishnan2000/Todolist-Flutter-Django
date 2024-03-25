@@ -8,6 +8,7 @@ class SettingsView extends StatelessWidget {
   final settingsController = Get.put(SettingsController());
   @override
   Widget build(BuildContext context) {
+    settingsController.retryGetUserDetails();
     return ListView(
       children: [
         ListTile(
@@ -17,7 +18,7 @@ class SettingsView extends StatelessWidget {
           ),
           title: const Text('Profile'),
           subtitle: const Text('View and edit user profile'),
-          onTap: () => {debugPrint('logout')},
+          onTap: () => Get.toNamed('/profile'),
         ),
         const Divider(height: 0),
         ListTile(
@@ -25,7 +26,7 @@ class SettingsView extends StatelessWidget {
             Icons.power_settings_new,
             color: AppColor.primaryColor,
           ),
-          title: const Text('Confirm action'),
+          title: const Text('Log out'),
           subtitle: Obx(() => Text(settingsController.getCurrentUsername())),
           onTap: () async => settingsController.logout(),
         ),

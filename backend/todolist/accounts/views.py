@@ -1,9 +1,14 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.authentication import authenticate
 from rest_framework import permissions
-from accounts.serializer import RegistrationSerializer, LoginSerializer
+from accounts.serializer import (
+    RegistrationSerializer,
+    LoginSerializer,
+    ProfileUpdateSerializer,
+)
 from .models import User
 from todolist.utils import ErrorHandling, Token
 import logging
@@ -73,6 +78,33 @@ class GetUserDetails(APIView):
             return Response({"name": user.name, "email": user.email}, status=200)
         except User.DoesNotExist:
             return Response(
-                {"error_message": "Invalid credentials", "error_code": "D1005"},
+                {"error_message": "User doesn't exist", "error_code": "D1004"},
+                status=400,
+            )
+
+
+class UpdateUserProfile(UpdateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def update(self, request):
+        user_id = request.user.id
+        try:
+            user = User.objects.get(id=user_id)
+            serialized_data = ProfileUpdateSerializer(user, request.data, partial=True)
+            if serialized_data.is_valid():
+                self.perform_update(serialized_data)
+                logger.info("User with id" + str(user.id) + " info has been updated")
+                return Response(
+                    {"message": "User information updated successfully"}, status=200
+                )
+            else:
+                logger.warn("Validation failed")
+                return Response(
+                    ErrorHandling.error_message_handling(self, serialized_data.errors),
+                    status=400,
+                )
+        except User.DoesNotExist:
+            return Response(
+                {"error_message": "User doesn't exist", "error_code": "D1004"},
                 status=400,
             )

@@ -15,23 +15,29 @@ class SettingsController extends GetxController {
     getUserDetails();
   }
 
-  void getUserDetails() async {
+  Future<void> getUserDetails() async {
     dio.Response? response = await UserAPI().userDetails();
     if (response?.statusCode == 200) {
       user.value = User.fromJson(response?.data);
     }
   }
 
+  void retryGetUserDetails() {
+    if (user.value.email.isEmpty) {
+      getUserDetails();
+    }
+  }
+
   void logout() async {
     Get.defaultDialog(
-      title: 'Logout',
+      title: 'Confirm action',
       titleStyle: const TextStyle(fontWeight: FontWeight.bold),
       middleText: 'Are you sure you want logout ?',
       confirm: FilledButton(
         style:
             FilledButton.styleFrom(backgroundColor: AppColor.pendingLateColor),
         onPressed: () async => onlogout(),
-        child: const Text('Logout'),
+        child: const Text('Log out'),
       ),
       cancel: OutlinedButton(
           onPressed: () => Get.back(), child: const Text('Cancel')),
