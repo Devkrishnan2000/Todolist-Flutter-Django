@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/src/settings/settings_view.dart';
 import 'package:todolist/src/task/home_page_controller.dart';
 import 'package:todolist/src/task/list/tasklist_view.dart';
 import 'package:todolist/utils/appbar.dart';
@@ -17,20 +18,13 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _tabController = TabController(length: 2, initialIndex: 0, vsync: this);
+    _tabController = TabController(length: 3, initialIndex: 0, vsync: this);
     _tabController.addListener(_handleTabIndex);
   }
 
   void _handleTabIndex() {
     setState(() {});
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
   }
 
   @override
@@ -48,26 +42,28 @@ class _HomePageState extends State<HomePage>
                       controller: _tabController,
                       tabs: const [
                         Tab(
-                          text: "Pending Tasks",
+                          text: "Pending",
                         ),
                         Tab(
-                          text: "Completed Tasks",
+                          text: "Completed",
+                        ),
+                        Tab(
+                          text: "Settings",
                         ),
                       ],
                     ),
                     Expanded(
-                      child: TabBarView(
-                          controller: _tabController,
-                          children: const [
-                            TaskListView(
-                              listUrl: '/tasks/list/?completed=False',
-                              tag: "pending",
-                            ),
-                            TaskListView(
-                              listUrl: '/tasks/list/?completed=True',
-                              tag: "completed",
-                            ),
-                          ]),
+                      child: TabBarView(controller: _tabController, children: [
+                        const TaskListView(
+                          listUrl: '/tasks/list/?completed=False',
+                          tag: "pending",
+                        ),
+                        const TaskListView(
+                          listUrl: '/tasks/list/?completed=True',
+                          tag: "completed",
+                        ),
+                        SettingsView(),
+                      ]),
                     )
                   ],
                 ),

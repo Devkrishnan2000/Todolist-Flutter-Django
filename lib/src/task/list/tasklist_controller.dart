@@ -12,6 +12,7 @@ import 'tasklist_model.dart';
 class TaskListController extends GetxController with StateMixin {
   var taskList = TaskListModel().obs;
   var listKey = GlobalKey<AnimatedListState>().obs;
+  var isLoading = false.obs;
   final confettiController =
       ConfettiController(duration: const Duration(seconds: 3));
   bool confettiPlayed = false;
@@ -52,6 +53,7 @@ class TaskListController extends GetxController with StateMixin {
         nextPageUrl = taskList.value.next as String;
       }
       change(taskList, status: RxStatus.loadingMore());
+      isLoading.value = true;
       deo.Response? response = await TaskAPI().listOpenTasks(nextPageUrl);
       if (response?.statusCode == 200) {
         TaskListModel newData = TaskListModel.fromJSON(response?.data);
@@ -60,13 +62,14 @@ class TaskListController extends GetxController with StateMixin {
         taskList.value.next = newData.next;
         taskList.value.count = newData.count;
         listKey.value.currentState
-            ?.insertAllItems(oldListLength, newData.results.length);
+            ?.insertAllItems(oldListLength, newData.results.length,duration: const Duration(seconds: 1));
         taskList.value.results.isEmpty
             ? change(taskList, status: RxStatus.empty())
             : change(taskList, status: RxStatus.success());
       } else {
         change(taskList, status: RxStatus.error("Error Fetching data"));
       }
+      isLoading.value = false;
     }
   }
 
@@ -90,8 +93,7 @@ class TaskListController extends GetxController with StateMixin {
       // if successful delete that task from list
       removeFromList(task, tag);
     } else {
-      CustomSnackBar
-          .showErrorSnackBar("Operation Failed", "Please Try again");
+      CustomSnackBar.showErrorSnackBar("Operation Failed", "Please Try again");
       change(taskList, status: RxStatus.error("Error Deleting data"));
     }
   }
@@ -103,8 +105,7 @@ class TaskListController extends GetxController with StateMixin {
       // if successful delete that task from list
       await removeFromList(task, tag);
     } else {
-      CustomSnackBar
-          .showErrorSnackBar("Operation Failed", "Please Try again");
+      CustomSnackBar.showErrorSnackBar("Operation Failed", "Please Try again");
       change(taskList, status: RxStatus.error("Error Deleting data"));
     }
   }

@@ -15,17 +15,9 @@ class LoginController extends GetxController {
   var isLoading = false.obs;
 
   @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-  }
-
-  @override
   void dispose() {
-    // TODO: implement dispose
     emailController.dispose();
     passwordController.dispose();
-    ;
     super.dispose();
   }
 

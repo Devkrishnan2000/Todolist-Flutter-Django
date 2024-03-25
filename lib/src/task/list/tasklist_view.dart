@@ -20,7 +20,6 @@ class _TaskListViewState extends State<TaskListView> {
   late final TaskListController taskController;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     taskController = Get.put(TaskListController(), tag: widget.tag);
     taskController.loadList(url: widget.listUrl);
@@ -29,7 +28,6 @@ class _TaskListViewState extends State<TaskListView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     scrollController.dispose();
     super.dispose();
   }
@@ -48,8 +46,11 @@ class _TaskListViewState extends State<TaskListView> {
           initialItemCount: taskController.taskList.value.results.length,
           itemBuilder: (context, index, animation) {
             Task task = taskController.taskList.value.results[index];
-            return AnimatedItem(
-                animation: animation, task: task, tag: widget.tag);
+            return Column(
+              children: [
+                AnimatedItem(animation: animation, task: task, tag: widget.tag),
+              ],
+            );
           },
         ),
       ),

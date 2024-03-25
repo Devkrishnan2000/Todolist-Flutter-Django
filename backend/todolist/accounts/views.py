@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import authenticate
-from accounts.serializer import RegistrationSerializer,LoginSerializer
+from rest_framework import permissions
+from accounts.serializer import RegistrationSerializer, LoginSerializer
 from .models import User
 from todolist.utils import ErrorHandling, Token
 import logging
@@ -34,16 +35,14 @@ class Login(APIView):
         serialized_data = LoginSerializer(data=request.data)
         if serialized_data.is_valid():
             try:
-                user = User.objects.get(
-                    email=serialized_data.validated_data["email"]
-                )
+                user = User.objects.get(email=serialized_data.validated_data["email"])
                 is_user_authenticated = authenticate(
                     email=serialized_data.validated_data["email"],
                     password=serialized_data._validated_data["password"],
                 )
                 if is_user_authenticated:
                     logger.info("User with id" + str(user.id) + " has logged in")
-                    return Response(Token.generate_token(self,user), status=200)
+                    return Response(Token.generate_token(self, user), status=200)
                 else:
                     logger.warn("Invalid credentials")
                     return Response(
@@ -60,5 +59,20 @@ class Login(APIView):
             logger.warn("Validation failed")
             return Response(
                 ErrorHandling.error_message_handling(self, serialized_data.errors),
+                status=400,
+            )
+
+
+class GetUserDetails(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        user_id = request.user.id
+        try:
+            user = User.objects.get(id=user_id)
+            return Response({"name": user.name, "email": user.email}, status=200)
+        except User.DoesNotExist:
+            return Response(
+                {"error_message": "Invalid credentials", "error_code": "D1005"},
                 status=400,
             )

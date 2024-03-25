@@ -5,9 +5,11 @@ import 'package:todolist/api/api_connector.dart';
 class UserAPI {
   // Class which contains all the app's related to user
   late Dio _dioOpen;
+  late Future<Dio> _dioClosed;
 
   UserAPI() {
     _dioOpen = APIConnector().open; // for open api's
+    _dioClosed = APIConnector.protected().closed;
   }
   Future<Response?> register(data) async {
     // api call to register user
@@ -26,6 +28,18 @@ class UserAPI {
     Response? response;
     try {
       response = await _dioOpen.post("account/login/", data: data);
+    } on DioException catch (e) {
+      response = e.response;
+      debugPrint(e.message);
+    }
+    return response;
+  }
+
+  Future<Response?> userDetails() async {
+    Response? response;
+    Dio closed = await _dioClosed;
+    try {
+      response = await closed.get("account/detail/");
     } on DioException catch (e) {
       response = e.response;
       debugPrint(e.message);
@@ -80,7 +94,7 @@ class TaskAPI {
     Response? response;
     Dio closed = await _dioClosed;
     try {
-      response = await closed.post("tasks/create/",data: data);
+      response = await closed.post("tasks/create/", data: data);
     } on DioException catch (e) {
       response = e.response;
       debugPrint(e.toString());

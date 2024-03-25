@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:todolist/src/task/task_model.dart';
 import 'package:todolist/utils/appcolor.dart';
 
@@ -38,7 +37,7 @@ class DeleteTaskDialog {
                             style: FilledButton.styleFrom(
                                 backgroundColor: AppColor.pendingLateColor),
                             onPressed: () {
-                              taskController.deleteTask(task,tag);
+                              taskController.deleteTask(task, tag);
                               Navigator.of(context).pop();
                             },
                             child: const Text("Delete task")),
