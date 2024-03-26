@@ -5,7 +5,6 @@ import 'package:todolist/src/registration/registration_model.dart';
 import 'package:todolist/utils/snack_bar.dart';
 
 import '../../api/apis.dart';
-import '../../utils/validation.dart';
 
 class RegistrationController extends GetxController {
   var registrationFormKey = GlobalKey<FormState>(debugLabel: 'registrationKey');
@@ -32,50 +31,6 @@ class RegistrationController extends GetxController {
 
   void showHideRePassword() {
     isRePasswordVisible.value = !isRePasswordVisible.value;
-  }
-
-  String? validateName(String? value) {
-    if (!Validation.requiredFieldValidation(value!)) {
-      return Validation.requiredValidationMsg;
-    }
-    if (!Validation.nameFieldValidation(value)) {
-      return Validation.nameFieldValidationMsg;
-    } else {
-      return null;
-    }
-  }
-
-  String? validateEmail(String? value) {
-    if (!Validation.requiredFieldValidation(value!)) {
-      return Validation.requiredValidationMsg;
-    }
-    if (!Validation.emailFieldValidation(value)) {
-      return Validation.emailValidationMsg;
-    } else {
-      return null;
-    }
-  }
-
-  String? validatePassword(String? value) {
-    if (!Validation.requiredFieldValidation(value!)) {
-      return Validation.requiredValidationMsg;
-    }
-    if (!Validation.passwordFieldValidation(value)) {
-      return Validation.passwordFieldValidationMsg;
-    } else {
-      return null;
-    }
-  }
-
-  String? validateRePassword(String? value) {
-    if (!Validation.requiredFieldValidation(value!)) {
-      return Validation.requiredValidationMsg;
-    }
-    if (!Validation.passwordMatchValidation(value, passwordController.text)) {
-      return Validation.passwordMatchValidationMsg;
-    } else {
-      return null;
-    }
   }
 
   void registerUser() async {

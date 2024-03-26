@@ -23,6 +23,16 @@ class SettingsView extends StatelessWidget {
         const Divider(height: 0),
         ListTile(
           leading: const Icon(
+            Icons.password_rounded,
+            color: AppColor.primaryColor,
+          ),
+          title: const Text('Change password'),
+          subtitle: const Text('Last password change on'),
+          onTap: () => Get.toNamed("/change-password"),
+        ),
+        const Divider(height: 0),
+        ListTile(
+          leading: const Icon(
             Icons.power_settings_new,
             color: AppColor.primaryColor,
           ),

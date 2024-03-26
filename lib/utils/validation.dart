@@ -8,7 +8,10 @@ class Validation {
       "Should contain only alphabets and space";
   static const String passwordFieldValidationMsg =
       "Should contain atLeast one alphabet character,digit and minimum of 8 digits.";
-  static const String passwordMatchValidationMsg = "Password Doesn't Match";
+  static const String passwordMatchValidationMsg = "Password doesn't Match";
+  static const String PasswordOldMatchValidationMsg =
+      "New password cannot be same as old ";
+
   static bool emailFieldValidation(String value) {
     if (RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
         .hasMatch(value)) {
@@ -49,6 +52,58 @@ class Validation {
       return true;
     } else {
       return false;
+    }
+  }
+
+  static String? validateName(String? value) {
+    if (!Validation.requiredFieldValidation(value!)) {
+      return Validation.requiredValidationMsg;
+    }
+    if (!Validation.nameFieldValidation(value)) {
+      return Validation.nameFieldValidationMsg;
+    } else {
+      return null;
+    }
+  }
+
+  static String? validateEmail(String? value) {
+    if (!Validation.requiredFieldValidation(value!)) {
+      return Validation.requiredValidationMsg;
+    }
+    if (!Validation.emailFieldValidation(value)) {
+      return Validation.emailValidationMsg;
+    } else {
+      return null;
+    }
+  }
+
+  static String? validatePassword(String? value) {
+    if (!Validation.requiredFieldValidation(value!)) {
+      return Validation.requiredValidationMsg;
+    }
+    if (!Validation.passwordFieldValidation(value)) {
+      return Validation.passwordFieldValidationMsg;
+    } else {
+      return null;
+    }
+  }
+
+  static String? validateRePassword(String? value, password) {
+    if (!Validation.requiredFieldValidation(value!)) {
+      return Validation.requiredValidationMsg;
+    }
+    if (!Validation.passwordMatchValidation(value, password)) {
+      return Validation.passwordMatchValidationMsg;
+    } else {
+      return null;
+    }
+  }
+
+  static String? validateOldRePassword(String? value, oldPassword) {
+    if (Validation.passwordMatchValidation(value!, oldPassword)) {
+      return Validation.PasswordOldMatchValidationMsg;
+    } else {
+      return validatePassword(value);
     }
   }
 }

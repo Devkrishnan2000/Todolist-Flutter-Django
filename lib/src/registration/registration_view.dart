@@ -4,15 +4,12 @@ import 'package:get/get.dart';
 import 'package:todolist/src/registration/registration_controller.dart';
 import 'package:todolist/utils/animation.dart';
 import 'package:todolist/utils/appbar.dart';
+import 'package:todolist/utils/text_fields.dart';
+import 'package:todolist/utils/validation.dart';
 
-class Registration extends StatefulWidget {
+class Registration extends StatelessWidget {
   const Registration({super.key});
 
-  @override
-  State<Registration> createState() => _RegistrationState();
-}
-
-class _RegistrationState extends State<Registration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,81 +34,52 @@ class RegistrationForm extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: TextFormField(
+              child: CustomTextFields.normalTextField(
                 controller: registrationController.nameController,
-                decoration: const InputDecoration(
-                  labelText: "Name",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    registrationController.validateName(value),
+                validation: (value) => Validation.validateName(value),
                 maxLength: 40,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                label: "Name",
                 textInputAction: TextInputAction.next,
+                counterEnable: true,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: TextFormField(
+              child: CustomTextFields.normalTextField(
                 controller: registrationController.emailController,
-                decoration: const InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    registrationController.validateEmail(value),
+                validation: (value) => Validation.validateEmail(value),
                 maxLength: 100,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                label: "Email",
                 textInputAction: TextInputAction.next,
+                counterEnable: true,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: TextFormField(
-                controller: registrationController.passwordController,
-                decoration: InputDecoration(
-                    labelText: "Password",
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          registrationController.showHidePassword();
-                        },
-                        icon: Icon(
-                            registrationController.isPasswordVisible.value
-                                ? Icons.visibility_off
-                                : Icons.visibility))),
-                obscureText: !registrationController.isPasswordVisible.value,
-                validator: (value) =>
-                    registrationController.validatePassword(value),
-                maxLength: 20,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                textInputAction: TextInputAction.next,
-              ),
-            ),
+                padding: const EdgeInsets.all(20.0),
+                child: CustomTextFields.passwordTextField(
+                  controller: registrationController.passwordController,
+                  validation: (value) => Validation.validatePassword(value),
+                  label: "Password",
+                  textInputAction: TextInputAction.next,
+                  showHidePassword: () =>
+                      registrationController.showHidePassword(),
+                  isPasswowrdVisible:
+                      registrationController.isPasswordVisible.value,
+                  counterEnable: true,
+                )),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: TextFormField(
+              child: CustomTextFields.passwordTextField(
                 controller: registrationController.rePasswordController,
-                decoration: InputDecoration(
-                    labelText: "Re enter password",
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          registrationController.showHideRePassword();
-                        },
-                        icon: Icon(
-                            registrationController.isRePasswordVisible.value
-                                ? Icons.visibility_off
-                                : Icons.visibility))),
-                obscureText: !registrationController.isRePasswordVisible.value,
-                validator: (value) =>
-                    registrationController.validateRePassword(value),
-                maxLength: 20,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (value) {
-                  registrationController.registerUser();
-                },
+                validation: (value) => Validation.validateRePassword(
+                    value, registrationController.passwordController.text),
+                label: "Re enter password",
+                textInputAction: TextInputAction.next,
+                showHidePassword: () =>
+                    registrationController.showHideRePassword(),
+                isPasswowrdVisible:
+                    registrationController.isRePasswordVisible.value,
+                counterEnable: true,
               ),
             ),
             Padding(
@@ -120,11 +88,9 @@ class RegistrationForm extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: 60,
                 child: FilledButton(
-                  onPressed: () {
-                    registrationController.isLoading.value
-                        ? null
-                        : registrationController.registerUser();
-                  },
+                  onPressed: registrationController.isLoading.value
+                      ? null
+                      : () async => registrationController.registerUser(),
                   child: CustomAnimation.showLoadingAnimation(
                       registrationController.isLoading.value,
                       const Text("Register", style: TextStyle(fontSize: 20))),

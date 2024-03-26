@@ -8,6 +8,7 @@ from accounts.serializer import (
     RegistrationSerializer,
     LoginSerializer,
     ProfileUpdateSerializer,
+    PasswordUpdateSerializer,
 )
 from .models import User
 from todolist.utils import ErrorHandling, Token
@@ -90,7 +91,9 @@ class UpdateUserProfile(UpdateAPIView):
         user_id = request.user.id
         try:
             user = User.objects.get(id=user_id)
-            serialized_data = ProfileUpdateSerializer(user, request.data, partial=True)
+            serialized_data = ProfileUpdateSerializer(
+                user, request.data, partial=True, context={"user_id": user_id}
+            )
             if serialized_data.is_valid():
                 self.perform_update(serialized_data)
                 logger.info("User with id" + str(user.id) + " info has been updated")
@@ -106,5 +109,49 @@ class UpdateUserProfile(UpdateAPIView):
         except User.DoesNotExist:
             return Response(
                 {"error_message": "User doesn't exist", "error_code": "D1004"},
+                status=400,
+            )
+
+
+class ChangePassword(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def put(self, request):
+        serialized_data = PasswordUpdateSerializer(data=request.data)
+        if serialized_data.is_valid():
+            try:
+                user = User.objects.get(id=request.user.id)
+                old_password = serialized_data.data["old_password"]
+                new_password = serialized_data.data["password"]
+                if user.check_password(old_password):
+                    user.set_password(new_password)
+                    user.save()
+                    logger.info(
+                        "Password updated for user with id" + str(request.user.id)
+                    )
+                    return Response(
+                        {"message": "Password updated sucessfully"}, status=200
+                    )
+                else:
+                    logger.warning(
+                        "Password update failed : Old password doesn't match"
+                    )
+                    return Response(
+                        {
+                            "error_message": "Old password doesn't match",
+                            "error_code": "D1008",
+                        },
+                        status=400,
+                    )
+            except User.DoesNotExist:
+                logger.warn("User doesn't exist of id :"+str(request.user.id))
+                return Response(
+                    {"error_message": "User doesn't exist", "error_code": "D1004"},
+                    status=400,
+                )
+        else:
+            logger.warn("Validation failed")
+            return Response(
+                ErrorHandling.error_message_handling(self, serialized_data.errors),
                 status=400,
             )

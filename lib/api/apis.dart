@@ -51,7 +51,19 @@ class UserAPI {
     Response? response;
     Dio closed = await _dioClosed;
     try {
-      response = await closed.put("account/update/", data: data);
+      response = await closed.put("account/update/profile/", data: data);
+    } on DioException catch (e) {
+      response = e.response;
+      debugPrint(e.message);
+    }
+    return response;
+  }
+
+  Future<Response?> updatePassword(data) async {
+    Response? response;
+    Dio closed = await _dioClosed;
+    try {
+      response = await closed.put("account/update/password/", data: data);
     } on DioException catch (e) {
       response = e.response;
       debugPrint(e.message);

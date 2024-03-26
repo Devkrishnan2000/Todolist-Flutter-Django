@@ -3,7 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todolist/src/registration/registration_view.dart';
-import 'package:todolist/src/settings/Profile/profile_view.dart';
+import 'package:todolist/src/settings/change_password/change_password_view.dart';
+import 'package:todolist/src/settings/profile/profile_view.dart';
 import 'package:todolist/src/task/create_task/create_task_view.dart';
 import 'package:todolist/src/task/home_page_view.dart';
 import 'src/login/login_view.dart';
@@ -60,7 +61,12 @@ class MyApp extends StatelessWidget {
           name: '/profile',
           page: () => ProfileView(),
           transition: Transition.rightToLeft,
-        )
+        ),
+        GetPage(
+          name: '/change-password',
+          page: () => ChangePasswordView(),
+          transition: Transition.rightToLeft,
+        ),
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

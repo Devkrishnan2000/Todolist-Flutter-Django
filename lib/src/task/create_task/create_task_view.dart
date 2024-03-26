@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todolist/src/task/create_task/create_task_controller.dart';
 import 'package:todolist/utils/appbar.dart';
+import 'package:todolist/utils/text_fields.dart';
 
 class CreateTaskView extends StatelessWidget {
   CreateTaskView({super.key});
@@ -21,18 +22,14 @@ class CreateTaskView extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
-                        child: TextFormField(
-                          controller: createTaskController.titleController,
-                          decoration: const InputDecoration(
-                            labelText: 'Task title',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) =>
-                              createTaskController.validateTitle(value),
-                          maxLength: 50,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          textInputAction: TextInputAction.next,
-                        ),
+                        child: CustomTextFields.normalTextField(
+                            controller: createTaskController.titleController,
+                            validation: (value) =>
+                                createTaskController.validateTitle(value),
+                            maxLength: 50,
+                            label: "Task title",
+                            textInputAction: TextInputAction.next,
+                            counterEnable: true),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
@@ -74,7 +71,7 @@ class CreateTaskView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 12.0),
                         child: FilledButton(
-                            onPressed: () async{
+                            onPressed: () async {
                               createTaskController.createTask();
                             },
                             child: const SizedBox(
