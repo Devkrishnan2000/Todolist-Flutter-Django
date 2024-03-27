@@ -40,17 +40,15 @@ class _TaskListViewState extends State<TaskListView> {
           await taskController.loadList(url: widget.listUrl);
         },
         child: AnimatedList(
+          shrinkWrap: true,
           key: taskController.listKey.value,
           controller: scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           initialItemCount: taskController.taskList.value.results.length,
           itemBuilder: (context, index, animation) {
             Task task = taskController.taskList.value.results[index];
-            return Column(
-              children: [
-                AnimatedItem(animation: animation, task: task, tag: widget.tag),
-              ],
-            );
+            return AnimatedItem(
+                animation: animation, task: task, tag: widget.tag);
           },
         ),
       ),

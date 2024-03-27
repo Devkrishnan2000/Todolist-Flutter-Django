@@ -73,6 +73,6 @@ dependencies {
 
 android {
     defaultConfig {
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
     }
 }  

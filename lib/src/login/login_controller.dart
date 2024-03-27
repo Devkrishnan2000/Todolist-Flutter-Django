@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:todolist/src/login/login_model.dart';
 import 'package:todolist/utils/snack_bar.dart';
 import '../../api/apis.dart';
-import '../../utils/validation.dart';
 
 class LoginController extends GetxController {
   var loginFormKey = GlobalKey<FormState>(debugLabel: 'loginKey');
@@ -23,25 +22,6 @@ class LoginController extends GetxController {
 
   void showHidePassword() {
     passwordVisible.value = !passwordVisible.value;
-  }
-
-  String? emailValidator(String? value) {
-    if (!Validation.requiredFieldValidation(value!)) {
-      return Validation.requiredValidationMsg;
-    }
-    if (!Validation.emailFieldValidation(value)) {
-      return Validation.emailValidationMsg;
-    } else {
-      return null;
-    }
-  }
-
-  String? passwordValidator(String? value) {
-    if (!Validation.requiredFieldValidation(value!)) {
-      return Validation.requiredValidationMsg;
-    } else {
-      return null;
-    }
   }
 
   void login() async {

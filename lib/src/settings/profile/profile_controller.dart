@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todolist/api/apis.dart';
+import 'package:todolist/src/settings/profile/profile_model.dart';
 import 'package:todolist/src/settings/settings_controller.dart';
 import 'package:todolist/src/settings/user_model.dart';
 import 'package:todolist/utils/snack_bar.dart';
@@ -43,7 +44,7 @@ class ProfileController extends GetxController {
 
   void updateUserDetails() async {
     if (formKey.currentState!.validate()) {
-      var data = {"name": nameController.text, "email": emailController.text};
+      var data = Profile(nameController.text, emailController.text).toJson();
       isLoading.value = true;
       dio.Response? response = await UserAPI().updateUserDetails(data);
       if (response?.statusCode == 200) {

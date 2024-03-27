@@ -5,6 +5,7 @@ import 'package:dio/dio.dart' as deo;
 import 'package:todolist/src/task/list/tasklist_view.dart';
 import 'package:todolist/utils/appcolor.dart';
 import 'package:todolist/utils/snack_bar.dart';
+import 'package:todolist/utils/toast.dart';
 import '../../../api/apis.dart';
 import '../task_model.dart';
 import 'tasklist_model.dart';
@@ -35,7 +36,7 @@ class TaskListController extends GetxController with StateMixin {
   }
 
   Future<void> loadMoreData({bool afterDeletion = false}) async {
-    if (taskList.value.next != null) {
+    if (taskList.value.next != null && !isLoading.value) {
       // loads next set of data
       late String nextPageUrl;
       if (afterDeletion) {
@@ -61,8 +62,9 @@ class TaskListController extends GetxController with StateMixin {
         taskList.value.results.addAll(newData.results);
         taskList.value.next = newData.next;
         taskList.value.count = newData.count;
-        listKey.value.currentState
-            ?.insertAllItems(oldListLength, newData.results.length,duration: const Duration(seconds: 1));
+        listKey.value.currentState?.insertAllItems(
+            oldListLength, newData.results.length,
+            duration: const Duration(seconds: 1));
         taskList.value.results.isEmpty
             ? change(taskList, status: RxStatus.empty())
             : change(taskList, status: RxStatus.success());
@@ -91,7 +93,8 @@ class TaskListController extends GetxController with StateMixin {
         task.taskId); // performs api call to delete task from server
     if (response?.statusCode == 200) {
       // if successful delete that task from list
-      removeFromList(task, tag);
+      await removeFromList(task, tag);
+      CustomToast.show(msg: "Task deleted");
     } else {
       CustomSnackBar.showErrorSnackBar("Operation Failed", "Please Try again");
       change(taskList, status: RxStatus.error("Error Deleting data"));
@@ -104,6 +107,7 @@ class TaskListController extends GetxController with StateMixin {
     if (response?.statusCode == 200) {
       // if successful delete that task from list
       await removeFromList(task, tag);
+      CustomToast.show(msg: "Task completed");
     } else {
       CustomSnackBar.showErrorSnackBar("Operation Failed", "Please Try again");
       change(taskList, status: RxStatus.error("Error Deleting data"));

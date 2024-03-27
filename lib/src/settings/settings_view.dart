@@ -27,7 +27,7 @@ class SettingsView extends StatelessWidget {
             color: AppColor.primaryColor,
           ),
           title: const Text('Change password'),
-          subtitle: const Text('Last password change on'),
+          subtitle: const Text('Change your Todolist account password'),
           onTap: () => Get.toNamed("/change-password"),
         ),
         const Divider(height: 0),

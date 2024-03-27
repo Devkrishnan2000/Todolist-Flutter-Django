@@ -9,7 +9,7 @@ class Validation {
   static const String passwordFieldValidationMsg =
       "Should contain atLeast one alphabet character,digit and minimum of 8 digits.";
   static const String passwordMatchValidationMsg = "Password doesn't Match";
-  static const String PasswordOldMatchValidationMsg =
+  static const String passwordOldMatchValidationMsg =
       "New password cannot be same as old ";
 
   static bool emailFieldValidation(String value) {
@@ -100,10 +100,18 @@ class Validation {
   }
 
   static String? validateOldRePassword(String? value, oldPassword) {
-    if (Validation.passwordMatchValidation(value!, oldPassword)) {
-      return Validation.PasswordOldMatchValidationMsg;
+    if (value!.isNotEmpty && passwordMatchValidation(value, oldPassword)) {
+      return Validation.passwordOldMatchValidationMsg;
     } else {
       return validatePassword(value);
+    }
+  }
+
+  static String? validateLoginPassword(String? value) {
+    if (!Validation.requiredFieldValidation(value!)) {
+      return Validation.requiredValidationMsg;
+    } else {
+      return null;
     }
   }
 }
