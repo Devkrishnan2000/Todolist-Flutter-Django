@@ -3,6 +3,7 @@ import 'package:todolist/src/settings/settings_view.dart';
 import 'package:todolist/src/task/home_page_controller.dart';
 import 'package:todolist/src/task/list/tasklist_view.dart';
 import 'package:todolist/utils/appbar.dart';
+import 'package:todolist/utils/permission_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    GetPermission.getNotificationPermission();
     _tabController = TabController(length: 3, initialIndex: 0, vsync: this);
     _tabController.addListener(_handleTabIndex);
   }

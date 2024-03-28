@@ -35,7 +35,7 @@ class APIConnector {
         baseUrl: baseUrl,
         contentType: 'application/json',
         headers: {
-          'Authorization': 'Bearer ${access!}',
+          'Authorization': 'Bearer ${access ?? ''}',
         }));
     dio.interceptors.add(
       InterceptorsWrapper(

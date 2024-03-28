@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -49,6 +50,7 @@ class SettingsController extends GetxController {
     const storage = FlutterSecureStorage();
     await storage.write(key: "access", value: '');
     await storage.write(key: "refresh", value: '');
+    await AwesomeNotifications().cancelAll();
     Get.back();
     Get.offNamed("/login");
   }

@@ -5,7 +5,10 @@ class HomePageController {
   Widget floatingButton(int index) {
     if (index == 0) {
       return FloatingActionButton(
-        onPressed: () { Get.toNamed("/create_task");},
+        onPressed: () {
+          Get.toNamed("/create_task");
+          // testNotify();
+        },
         child: const Icon(Icons.add),
       );
     } else {

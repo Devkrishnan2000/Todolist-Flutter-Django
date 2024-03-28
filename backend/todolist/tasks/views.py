@@ -25,11 +25,11 @@ class CreateTask(APIView):
         data["user"] = request.user.id
         serialized_data = TaskCreateSerializer(data=data)
         if serialized_data.is_valid():
-            serialized_data.save()
+            task = serialized_data.save()
             logger.info("Task created :" + str(serialized_data.data))
-            return Response({"message": "task created"}, status=201)
+            return Response({"message": "task created","task_id":task.id}, status=201)
         else:
-            logger.warn("Validation failed")
+            logger.warn(serialized_data.errors)
             return Response(
                 ErrorHandling.error_message_handling(self, serialized_data.errors),
                 status=400,

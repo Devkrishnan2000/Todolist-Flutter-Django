@@ -7,6 +7,8 @@ import 'package:todolist/src/settings/change_password/change_password_view.dart'
 import 'package:todolist/src/settings/profile/profile_view.dart';
 import 'package:todolist/src/task/create_task/create_task_view.dart';
 import 'package:todolist/src/task/home_page_view.dart';
+import 'package:todolist/utils/notification.dart';
+import 'package:todolist/utils/notification_view.dart';
 import 'src/login/login_view.dart';
 
 void main() async {
@@ -18,24 +20,33 @@ void main() async {
 Future<bool> isFirstTimeOpening() async {
   WidgetsFlutterBinding.ensureInitialized();
   const storage = FlutterSecureStorage();
+  CustomNotification.initNotification();
   String? refresh = await storage.read(key: 'refresh');
-  if (refresh!.isNotEmpty) {
+  if (refresh != null && refresh.isNotEmpty) {
     return false;
   } else {
     return true;
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final bool isFirstTime;
   const MyApp({super.key, required this.isFirstTime});
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      navigatorKey: MyApp.navigatorKey,
       title: 'TodoList',
-      initialRoute: isFirstTime ? '/login' : '/',
+      initialRoute: widget.isFirstTime ? '/login' : '/',
       getPages: [
         GetPage(
           name: '/',
@@ -67,6 +78,10 @@ class MyApp extends StatelessWidget {
           page: () => ChangePasswordView(),
           transition: Transition.rightToLeft,
         ),
+        GetPage(
+          name: '/notification-screen',
+          page: () => const NotificationView(),
+        )
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

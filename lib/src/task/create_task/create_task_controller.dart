@@ -5,6 +5,7 @@ import 'package:todolist/api/apis.dart';
 import 'package:todolist/src/task/create_task/create_task_model.dart';
 import 'package:todolist/src/task/list/tasklist_controller.dart';
 import 'package:todolist/utils/format.dart';
+import 'package:todolist/utils/notification.dart';
 import 'package:todolist/utils/snack_bar.dart';
 import 'package:todolist/utils/validation.dart';
 
@@ -67,6 +68,12 @@ class CreateTaskController extends GetxController {
             CreateTask(titleController.text, descController.text, datetime!);
         dio.Response? response = await TaskAPI().createTask(data.toJSON());
         if (response?.statusCode == 201) {
+          await CustomNotification.setTaskNotification(
+            id: response?.data['task_id'],
+            title: data.title,
+            body: data.description,
+            datetime: data.date,
+          );
           Get.back();
           await pendingListController.loadList(
               url: '/tasks/list/?completed=False');
