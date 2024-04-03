@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomAnimation {
-  static Widget showLoadingAnimation(bool isLoading, Widget widget) {
+  static Widget showLoadingAnimation(
+      {required bool isLoading,
+      required Widget widget,
+      Color spinnerColor = Colors.white}) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+          child: CircularProgressIndicator(
+        color: spinnerColor,
+      ));
     } else {
       return widget;
     }

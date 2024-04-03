@@ -66,7 +66,7 @@ class LoginForm extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
                       onPressed: () {
-                        Get.toNamed("/registration");
+                        loginController.navigateToRegistration();
                       },
                       child: const Text(
                         "New ? create an account",
@@ -83,8 +83,8 @@ class LoginForm extends StatelessWidget {
                           ? null
                           : () async => {loginController.login()},
                       child: CustomAnimation.showLoadingAnimation(
-                          loginController.isLoading.value,
-                          const Text(
+                          isLoading: loginController.isLoading.value,
+                          widget: const Text(
                             'Login',
                             style: TextStyle(fontSize: 20),
                           )),

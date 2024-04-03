@@ -24,6 +24,11 @@ class LoginController extends GetxController {
     passwordVisible.value = !passwordVisible.value;
   }
 
+  void navigateToRegistration() {
+    loginFormKey.currentState!.reset();
+    Get.toNamed("/registration");
+  }
+
   void login() async {
     if (loginFormKey.currentState!.validate()) {
       LoginModel data =

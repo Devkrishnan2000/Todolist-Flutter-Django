@@ -64,7 +64,7 @@ class TaskListController extends GetxController with StateMixin {
         taskList.value.count = newData.count;
         listKey.value.currentState?.insertAllItems(
             oldListLength, newData.results.length,
-            duration: const Duration(seconds: 1));
+            duration: const Duration(milliseconds: 500));
         taskList.value.results.isEmpty
             ? change(taskList, status: RxStatus.empty())
             : change(taskList, status: RxStatus.success());

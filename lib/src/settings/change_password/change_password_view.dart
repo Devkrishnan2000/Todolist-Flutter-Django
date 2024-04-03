@@ -76,8 +76,8 @@ class ChangePasswordView extends StatelessWidget {
                                 ? null
                                 : () async => controller.changePassword(),
                             child: CustomAnimation.showLoadingAnimation(
-                              controller.isLoading.value,
-                              Text(
+                              isLoading: controller.isLoading.value,
+                              widget: Text(
                                 'Change password',
                                 style: CustomTextStyle.mediumText(),
                               ),

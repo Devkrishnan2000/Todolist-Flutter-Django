@@ -1,7 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:todolist/main.dart';
 
 class CustomNotification {
   CustomNotification._();
@@ -54,8 +53,6 @@ class CustomNotification {
           title: title,
           body: body,
           category: NotificationCategory.Alarm,
-          bigPicture: 'asset://assets/images/splash.png',
-          notificationLayout: NotificationLayout.BigPicture,
           fullScreenIntent: true,
           duration: const Duration(seconds: 10),
           locked: false,
@@ -70,30 +67,6 @@ class CustomNotification {
           timeZone: localTimeZone,
         ));
   }
-
-  // static Future<void> setTaskNotification(
-  //     {required int id,
-  //     required String title,
-  //     required String body,
-  //     required DateTime datetime}) async {
-  //   AndroidForegroundService.startAndroidForegroundService(
-  //       foregroundStartMode: ForegroundStartMode.stick,
-  //       foregroundServiceType: ForegroundServiceType.phoneCall,
-  //       content: NotificationContent(
-  //           id: id,
-  //           body: body,
-  //           title: title,
-  //           channelKey: 'task_channel',
-  //           bigPicture: 'asset://assets/images/splash.jpg',
-  //           notificationLayout: NotificationLayout.BigPicture,
-  //           category: NotificationCategory.Service,
-  //           fullScreenIntent: true,
-  //           wakeUpScreen: true),
-  //       actionButtons: [
-  //         NotificationActionButton(
-  //             key: 'SHOW_SERVICE_DETAILS', label: 'Show details')
-  //       ]);
-  // }
 }
 
 class NotificationController {
@@ -125,7 +98,7 @@ class NotificationController {
     debugPrint("called!!!!!");
     // Your code goes here
     Get.offNamed('/notification-screen', arguments: [
-      {"title": receivedAction.title}
+      {"title": receivedAction.title, "id": receivedAction.id}
     ]);
   }
 }

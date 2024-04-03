@@ -15,8 +15,8 @@ class APIConnector {
 
   Dio createOpenDio() {
     return Dio(BaseOptions(
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
       baseUrl: baseUrl,
       contentType: 'application/json',
       // headers: {

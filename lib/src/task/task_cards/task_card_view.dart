@@ -32,6 +32,7 @@ class TaskCardView extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Flexible(
                   child: Text(
@@ -55,7 +56,7 @@ class TaskCardView extends StatelessWidget {
                     if (!task.completed)
                       IconButton(
                           onPressed: () {
-                            taskController.completeTask(task,tag);
+                            taskController.completeTask(task, tag);
                           },
                           icon: const Icon(
                             Icons.task_alt_rounded,

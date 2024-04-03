@@ -8,7 +8,7 @@ import 'package:todolist/src/settings/profile/profile_view.dart';
 import 'package:todolist/src/task/create_task/create_task_view.dart';
 import 'package:todolist/src/task/home_page_view.dart';
 import 'package:todolist/utils/notification.dart';
-import 'package:todolist/utils/notification_view.dart';
+import 'package:todolist/src/task/notification/notification_view.dart';
 import 'src/login/login_view.dart';
 
 void main() async {

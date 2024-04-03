@@ -59,8 +59,8 @@ class ProfileView extends StatelessWidget {
                                 : () async =>
                                     profileController.updateUserDetails(),
                         child: CustomAnimation.showLoadingAnimation(
-                          profileController.isLoading.value,
-                          Text(
+                          isLoading: profileController.isLoading.value,
+                          widget: Text(
                             'Update Details',
                             style: CustomTextStyle.mediumText(),
                           ),

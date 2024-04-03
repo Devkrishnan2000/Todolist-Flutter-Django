@@ -92,8 +92,9 @@ class RegistrationForm extends StatelessWidget {
                       ? null
                       : () async => registrationController.registerUser(),
                   child: CustomAnimation.showLoadingAnimation(
-                      registrationController.isLoading.value,
-                      const Text("Register", style: TextStyle(fontSize: 20))),
+                      isLoading: registrationController.isLoading.value,
+                      widget: const Text("Register",
+                          style: TextStyle(fontSize: 20))),
                 ),
               ),
             )

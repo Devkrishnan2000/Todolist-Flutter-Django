@@ -39,17 +39,31 @@ class _TaskListViewState extends State<TaskListView> {
         onRefresh: () async {
           await taskController.loadList(url: widget.listUrl);
         },
-        child: AnimatedList(
-          shrinkWrap: true,
-          key: taskController.listKey.value,
-          controller: scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          initialItemCount: taskController.taskList.value.results.length,
-          itemBuilder: (context, index, animation) {
-            Task task = taskController.taskList.value.results[index];
-            return AnimatedItem(
-                animation: animation, task: task, tag: widget.tag);
-          },
+        child: Stack(
+          children: [
+            AnimatedList(
+              padding: const EdgeInsets.only(bottom: 50),
+              shrinkWrap: true,
+              key: taskController.listKey.value,
+              controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              initialItemCount: taskController.taskList.value.results.length,
+              itemBuilder: (context, index, animation) {
+                Task task = taskController.taskList.value.results[index];
+                return AnimatedItem(
+                    animation: animation, task: task, tag: widget.tag);
+              },
+            ),
+            if (taskController.isLoading.value)
+              Positioned(
+                bottom: 5,
+                width: Get.width,
+                child: const Align(
+                  alignment: Alignment.bottomCenter,
+                  child: CircularProgressIndicator(),
+                ),
+              )
+          ],
         ),
       ),
       onLoading: const Center(child: CircularProgressIndicator()),

@@ -126,6 +126,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  flutter_ringtone_player:
+    dependency: "direct main"
+    description:
+      name: flutter_ringtone_player
+      sha256: "0b036416fda0654da52221989bd1a8ccd2876cea57f61ecc3a4fc272bd738c67"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -445,6 +453,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  slidable_button:
+    dependency: "direct main"
+    description:
+      name: slidable_button
+      sha256: "8a20672f226898ff5ddaca38ebe87069020dc8d1b2512857b5ed335af0d7c893"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0+1"
   source_span:
     dependency: transitive
     description:

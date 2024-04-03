@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mesh_gradient/mesh_gradient.dart';
+import 'package:todolist/src/task/notification/notification_controller.dart';
 import 'package:todolist/utils/appcolor.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:slidable_button/slidable_button.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
@@ -15,6 +18,7 @@ class NotificationView extends StatefulWidget {
 class _NotificationViewState extends State<NotificationView>
     with TickerProviderStateMixin {
   late final MeshGradientController _controller;
+  final notificationController = Get.put(TaskNotificationController());
 
   @override
   void initState() {
@@ -54,6 +58,7 @@ class _NotificationViewState extends State<NotificationView>
     );
 
     startAnimation(duration: 10);
+    FlutterRingtonePlayer.playAlarm();
   }
 
   @override
@@ -113,9 +118,53 @@ class _NotificationViewState extends State<NotificationView>
             bottom: 100,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                onPressed: () => SystemNavigator.pop(),
-                child: const Text("Dismiss"),
+              child: HorizontalSlidableButton(
+                width: MediaQuery.of(context).size.width,
+                color: const Color.fromARGB(70, 0, 255, 136),
+                height: 60,
+                buttonWidth: 120.0,
+                buttonColor: Colors.white,
+                dismissible: false,
+                initialPosition: SlidableButtonPosition.center,
+                label: const Center(
+                  child: Text(
+                    'Slide To',
+                    style: TextStyle(color: AppColor.primaryColor),
+                  ),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Dismiss',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Complete Task',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                onChanged: (position) {
+                  setState(() {
+                    if (position == SlidableButtonPosition.end) {
+                      notificationController.completeTaskViaNotification(
+                        taskId: data[0]['id'],
+                      );
+                      debugPrint("Task Completed ${data[0]['id'].toString()}");
+                    } else {
+                      FlutterRingtonePlayer.stop();
+                      SystemNavigator.pop();
+                    }
+                  });
+                },
               ),
             ),
           ),

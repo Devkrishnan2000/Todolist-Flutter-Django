@@ -40,7 +40,7 @@ class CustomTextFields {
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
-          errorMaxLines: 2,
+          errorMaxLines: 3,
           suffixIcon: IconButton(
             onPressed: () {
               showHidePassword();

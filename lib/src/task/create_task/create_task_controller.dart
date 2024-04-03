@@ -16,6 +16,7 @@ class CreateTaskController extends GetxController {
   var pendingListController = Get.find<TaskListController>(tag: "pending");
   DateTime? datetime;
   var datetimeButtonLabel = "Set date and time".obs;
+  var isLoading = false.obs;
   @override
   void dispose() {
     titleController.dispose();
@@ -26,6 +27,9 @@ class CreateTaskController extends GetxController {
   String? validateTitle(String? value) {
     if (!Validation.requiredFieldValidation(value!)) {
       return Validation.requiredValidationMsg;
+    }
+    if (!Validation.minFourCharactersValidation(value)) {
+      return Validation.minimum4CharacterValidationMsg;
     } else {
       return null;
     }
@@ -34,6 +38,9 @@ class CreateTaskController extends GetxController {
   String? validateDesc(String? value) {
     if (Validation.requiredFieldValidation(value!)) {
       return Validation.requiredValidationMsg;
+    }
+    if (!Validation.minFourCharactersValidation(value)) {
+      return Validation.minimum4CharacterValidationMsg;
     } else {
       return null;
     }
@@ -64,28 +71,35 @@ class CreateTaskController extends GetxController {
   void createTask() async {
     if (createTaskFormKey.currentState!.validate()) {
       if (datetime != null) {
-        CreateTask data =
-            CreateTask(titleController.text, descController.text, datetime!);
-        dio.Response? response = await TaskAPI().createTask(data.toJSON());
-        if (response?.statusCode == 201) {
-          await CustomNotification.setTaskNotification(
-            id: response?.data['task_id'],
-            title: data.title,
-            body: data.description,
-            datetime: data.date,
-          );
-          Get.back();
-          await pendingListController.loadList(
-              url: '/tasks/list/?completed=False');
-          CustomSnackBar.showSuccessSnackBar("Successful", "Task Created !");
+        if (datetime!.compareTo(DateTime.now()) >= 0) {
+          CreateTask data =
+              CreateTask(titleController.text, descController.text, datetime!);
+          isLoading.value = true;
+          dio.Response? response = await TaskAPI().createTask(data.toJSON());
+          if (response?.statusCode == 201) {
+            await CustomNotification.setTaskNotification(
+              id: response?.data['task_id'],
+              title: data.title,
+              body: data.description,
+              datetime: data.date,
+            );
+            Get.back();
+            await pendingListController.loadList(
+                url: '/tasks/list/?completed=False');
+            CustomSnackBar.showSuccessSnackBar("Successful", "Task Created !");
+          } else {
+            CustomSnackBar.showErrorSnackBar(
+                "Server error", "Please try again later");
+          }
         } else {
           CustomSnackBar.showErrorSnackBar(
-              "Server error", "Please try again later");
+              "Invalid time", "Please provide a future time");
         }
       } else {
         CustomSnackBar.showErrorSnackBar(
             "Attention", "Please set date and time");
       }
+      isLoading.value = false;
     }
   }
 

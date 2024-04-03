@@ -7,10 +7,12 @@ class Validation {
   static const String nameFieldValidationMsg =
       "Should contain only alphabets and space";
   static const String passwordFieldValidationMsg =
-      "Should contain atLeast one alphabet character,digit and minimum of 8 digits.";
+      "Should contain atLeast one capital alphabet character,special character,digit and minimum of 8 digits.";
   static const String passwordMatchValidationMsg = "Password doesn't Match";
   static const String passwordOldMatchValidationMsg =
       "New password cannot be same as old ";
+  static const String minimum4CharacterValidationMsg =
+      "Minimum 4 characters required";
 
   static bool emailFieldValidation(String value) {
     if (RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
@@ -23,6 +25,14 @@ class Validation {
 
   static bool requiredFieldValidation(String value) {
     if (value.trim().isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static bool minFourCharactersValidation(String value) {
+    if (value.trim().length < 4) {
       return false;
     } else {
       return true;

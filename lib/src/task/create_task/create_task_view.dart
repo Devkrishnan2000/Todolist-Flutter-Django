@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todolist/src/task/create_task/create_task_controller.dart';
+import 'package:todolist/utils/animation.dart';
 import 'package:todolist/utils/appbar.dart';
 import 'package:todolist/utils/text_fields.dart';
 
@@ -74,14 +75,17 @@ class CreateTaskView extends StatelessWidget {
                             onPressed: () async {
                               createTaskController.createTask();
                             },
-                            child: const SizedBox(
+                            child: SizedBox(
                               height: 60,
                               width: double.infinity,
                               child: Center(
-                                child: Text(
-                                  'Create Task',
-                                  style: TextStyle(fontSize: 24),
-                                ),
+                                child: CustomAnimation.showLoadingAnimation(
+                                    isLoading:
+                                        createTaskController.isLoading.value,
+                                    widget: const Text(
+                                      'Create Task',
+                                      style: TextStyle(fontSize: 24),
+                                    )),
                               ),
                             )),
                       )
