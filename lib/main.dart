@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todolist/src/registration/registration_view.dart';
@@ -9,9 +10,11 @@ import 'package:todolist/src/task/create_task/create_task_view.dart';
 import 'package:todolist/src/task/home_page_view.dart';
 import 'package:todolist/utils/notification.dart';
 import 'package:todolist/src/task/notification/notification_view.dart';
+
 import 'src/login/login_view.dart';
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(MyApp(
     isFirstTime: await isFirstTimeOpening(),
   ));
@@ -20,7 +23,6 @@ void main() async {
 Future<bool> isFirstTimeOpening() async {
   WidgetsFlutterBinding.ensureInitialized();
   const storage = FlutterSecureStorage();
-  CustomNotification.initNotification();
   String? refresh = await storage.read(key: 'refresh');
   if (refresh != null && refresh.isNotEmpty) {
     return false;
@@ -41,6 +43,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+
+  @override
+  void initState() {
+    super.initState();
+    CustomNotification.initNotification();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

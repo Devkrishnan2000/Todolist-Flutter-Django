@@ -165,7 +165,7 @@ class TaskListController extends GetxController with StateMixin {
                 ),
               ),
               const Text(
-                "You have completed all the tasks",
+                "No pending tasks left",
                 style: TextStyle(fontSize: 14),
               ),
             ],

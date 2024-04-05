@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,7 @@ class CreateTaskController extends GetxController {
   var titleController = TextEditingController();
   var descController = TextEditingController();
   var pendingListController = Get.find<TaskListController>(tag: "pending");
-  DateTime? datetime;
+  static DateTime? datetime;
   var datetimeButtonLabel = "Set date and time".obs;
   var isLoading = false.obs;
   @override
@@ -80,8 +81,20 @@ class CreateTaskController extends GetxController {
             await CustomNotification.setTaskNotification(
               id: response?.data['task_id'],
               title: data.title,
-              body: data.description,
+              body: 'Tap to Expand',
               datetime: data.date,
+              actionsButtons: [
+                NotificationActionButton(
+                  key: "dismiss",
+                  label: "Dismiss",
+                  actionType: ActionType.DismissAction,
+                ),
+                NotificationActionButton(
+                  key: "complete",
+                  label: "Complete Task",
+                  actionType: ActionType.SilentAction,
+                ),
+              ],
             );
             Get.back();
             await pendingListController.loadList(

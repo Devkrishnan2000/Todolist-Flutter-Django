@@ -5,8 +5,8 @@ import 'package:todolist/api/apis.dart';
 
 class TaskNotificationController extends GetxController {
   Future<void> completeTaskViaNotification({required int taskId}) async {
-    await TaskAPI().completeTask(taskId);
     FlutterRingtonePlayer.stop();
+    await TaskAPI().completeTask(taskId);
     SystemNavigator.pop();
   }
 }

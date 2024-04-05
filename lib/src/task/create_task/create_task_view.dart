@@ -72,9 +72,11 @@ class CreateTaskView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 12.0),
                         child: FilledButton(
-                            onPressed: () async {
-                              createTaskController.createTask();
-                            },
+                            onPressed: createTaskController.isLoading.value
+                                ? null
+                                : () async {
+                                    createTaskController.createTask();
+                                  },
                             child: SizedBox(
                               height: 60,
                               width: double.infinity,

@@ -1,6 +1,11 @@
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../api/apis.dart';
 
 class CustomNotification {
   CustomNotification._();
@@ -25,7 +30,7 @@ class CustomNotification {
         channelGroups: [
           NotificationChannelGroup(
               channelGroupKey: 'Task notifications',
-              channelGroupName: 'Task time up notifcation')
+              channelGroupName: 'Task time up notification')
         ],
         debug: true);
 
@@ -37,13 +42,23 @@ class CustomNotification {
             NotificationController.onNotificationDisplayedMethod,
         onDismissActionReceivedMethod:
             NotificationController.onDismissActionReceivedMethod);
+
+    final receivePort = ReceivePort();
+    IsolateNameServer.registerPortWithName(
+        receivePort.sendPort, "task_channel");
+    receivePort.asBroadcastStream().listen((event) {
+      Get.toNamed("/notification-screen", arguments: [
+        {"title": event.title, "id": event.id}
+      ]);
+    });
   }
 
   static Future<void> setTaskNotification(
       {required int id,
       required String title,
       required String body,
-      required DateTime datetime}) async {
+      required DateTime datetime,
+      List<NotificationActionButton>? actionsButtons}) async {
     var localTimeZone =
         await AwesomeNotifications().getLocalTimeZoneIdentifier();
     await AwesomeNotifications().createNotification(
@@ -56,7 +71,9 @@ class CustomNotification {
           fullScreenIntent: true,
           duration: const Duration(seconds: 10),
           locked: false,
+          displayOnForeground: false,
         ),
+        actionButtons: actionsButtons,
         schedule: NotificationCalendar(
           year: datetime.year,
           month: datetime.month,
@@ -95,10 +112,15 @@ class NotificationController {
   @pragma("vm:entry-point")
   static Future<void> onActionReceivedMethod(
       ReceivedAction receivedAction) async {
-    debugPrint("called!!!!!");
-    // Your code goes here
-    Get.offNamed('/notification-screen', arguments: [
-      {"title": receivedAction.title, "id": receivedAction.id}
-    ]);
+    debugPrint(receivedAction.actionType.toString());
+    if (receivedAction.actionType == ActionType.SilentAction &&
+        receivedAction.id != null) {
+      debugPrint("completed task intiated");
+      TaskAPI().completeTask(receivedAction.id!);
+    } else {
+      Get.offNamed('/notification-screen', arguments: [
+        {"title": receivedAction.title, "id": receivedAction.id}
+      ]);
+    }
   }
 }

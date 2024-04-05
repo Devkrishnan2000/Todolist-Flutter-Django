@@ -105,6 +105,9 @@ DATABASES = {
         "PASSWORD": config("PASSWORD"),
         "HOST": config("HOST"),
         "PORT": config("PORT"),
+        "OPTIONS": {
+                    'charset': 'utf8mb4'  # This is the relevant line
+                }
     }
 }
 

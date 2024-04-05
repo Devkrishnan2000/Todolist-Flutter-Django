@@ -5,7 +5,7 @@ import 'package:todolist/utils/appcolor.dart';
 
 class SettingsView extends StatelessWidget {
   SettingsView({super.key});
-  final settingsController = Get.put(SettingsController());
+  final settingsController = Get.find<SettingsController>();
   @override
   Widget build(BuildContext context) {
     settingsController.retryGetUserDetails();

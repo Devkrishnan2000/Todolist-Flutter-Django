@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:todolist/src/settings/settings_controller.dart';
 import 'package:todolist/src/settings/settings_view.dart';
 import 'package:todolist/src/task/home_page_controller.dart';
 import 'package:todolist/src/task/list/tasklist_view.dart';
@@ -15,12 +17,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final homePageController = HomePageController();
+  final floatButtonKey = GlobalKey();
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     GetPermission.getNotificationPermission();
+    Get.lazyPut(() => SettingsController());
     _tabController = TabController(length: 3, initialIndex: 0, vsync: this);
     _tabController.addListener(_handleTabIndex);
   }

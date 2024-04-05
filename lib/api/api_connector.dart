@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class APIConnector {
   late Dio open;
   late Future<Dio> closed;
-  static const baseUrl = "http://10.10.24.1:8000/";
+  static String baseUrl = dotenv.env['SERVER_IP']!;
   APIConnector() {
     open = createOpenDio();
   }

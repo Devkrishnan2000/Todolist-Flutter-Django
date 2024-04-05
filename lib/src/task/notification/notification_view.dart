@@ -1,11 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:mesh_gradient/mesh_gradient.dart';
 import 'package:todolist/src/task/notification/notification_controller.dart';
 import 'package:todolist/utils/appcolor.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:slidable_button/slidable_button.dart';
 
 class NotificationView extends StatefulWidget {
@@ -58,7 +58,11 @@ class _NotificationViewState extends State<NotificationView>
     );
 
     startAnimation(duration: 10);
-    FlutterRingtonePlayer.playAlarm();
+    FlutterRingtonePlayer.playNotification(looping: true);
+    Future.delayed(const Duration(seconds: 30), () {
+      FlutterRingtonePlayer.stop();
+      SystemNavigator.pop();
+    });
   }
 
   @override
@@ -102,11 +106,13 @@ class _NotificationViewState extends State<NotificationView>
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          data[0]['title'].toString(),
-                          style: const TextStyle(
-                            fontSize: 42,
-                            fontWeight: FontWeight.bold,
+                        child: Center(
+                          child: Text(
+                            data[0]['title'].toString(),
+                            style: const TextStyle(
+                              fontSize: 42,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
